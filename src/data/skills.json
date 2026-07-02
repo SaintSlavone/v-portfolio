@@ -1,0 +1,107 @@
+{
+	"name": "Stack",
+	"children": [
+		{
+			"name": "Frontend",
+			"children": [
+				{
+					"name": "Foundation",
+					"children": [
+						{ "name": "HTML" },
+						{ "name": "CSS" },
+						{ "name": "SCSS" },
+						{ "name": "JavaScript" },
+						{ "name": "TypeScript" }
+					]
+				},
+				{
+					"name": "React",
+					"children": [
+						{ "name": "Hooks" },
+						{ "name": "Props & State" },
+						{ "name": "Lifecycle" },
+						{ "name": "Events" },
+						{ "name": "Lists & Keys" },
+						{ "name": "Forms" },
+						{ "name": "Context API" },
+						{ "name": "Router" }
+					]
+				},
+				{
+					"name": "Next.js",
+					"children": [
+						{ "name": "App/Pages Router" },
+						{ "name": "SSR/SSG/ISR" },
+						{ "name": "Server/Client Comp." },
+						{ "name": "API Routes" },
+						{ "name": "next/image" }
+					]
+				},
+				{
+					"name": "3D & WebVR",
+					"children": [
+						{ "name": "Three.js" },
+						{ "name": "Mapbox GL" },
+						{ "name": "krpano" },
+						{ "name": "Pannellum" }
+					]
+				},
+				{
+					"name": "UI / UX",
+					"children": [
+						{ "name": "Responsive" },
+						{ "name": "Animations" },
+						{ "name": "SVG" }
+					]
+				}
+			]
+		},
+		{
+			"name": "Backend",
+			"children": [
+				{ "name": "Node.js" },
+				{
+					"name": "Express",
+					"children": [
+						{ "name": "REST API" },
+						{ "name": "Routing" },
+						{ "name": "Middleware" },
+						{ "name": "Error handling" }
+					]
+				},
+				{
+					"name": "Databases",
+					"children": [{ "name": "MySQL" }, { "name": "PostgreSQL" }]
+				},
+				{
+					"name": "Integrations",
+					"children": [
+						{ "name": "Third-party APIs" },
+						{ "name": "Sharp" },
+						{ "name": "CRM / Admin" }
+					]
+				}
+			]
+		},
+		{
+			"name": "DevOps",
+			"children": [
+				{ "name": "Linux" },
+				{ "name": "VPS deploy" },
+				{ "name": "Nginx" },
+				{ "name": "SSL / TLS" },
+				{ "name": "Docker" },
+				{ "name": "Git / GitLab" }
+			]
+		},
+		{
+			"name": "Tools",
+			"children": [
+				{ "name": "Blender" },
+				{ "name": "Photoshop" },
+				{ "name": "Figma" },
+				{ "name": "Claude Code" }
+			]
+		}
+	]
+}
