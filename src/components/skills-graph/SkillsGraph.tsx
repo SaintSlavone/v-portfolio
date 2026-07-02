@@ -121,12 +121,54 @@ export default function SkillsGraph() {
 		};
 	}, [nodes, links]);
 
+	// Screen px -> viewBox coordinates (accounts for the meet scaling)
+	const toGraphCoords = (event: React.PointerEvent) => {
+		const svg = svgRef.current;
+		if (!svg) return null;
+		const matrix = svg.getScreenCTM();
+		if (!matrix) return null;
+		const point = new DOMPoint(event.clientX, event.clientY);
+		const { x, y } = point.matrixTransform(matrix.inverse());
+		return { x, y };
+	};
+
+	const handleNodePointerDown = (node: GraphNode) => (event: React.PointerEvent) => {
+		// The pinned root is not draggable
+		if (node.depth === 0) return;
+		event.currentTarget.setPointerCapture(event.pointerId);
+		dragRef.current = node;
+		node.fx = node.x;
+		node.fy = node.y;
+		simRef.current?.alphaTarget(0.3).restart();
+	};
+
+	const handlePointerMove = (event: React.PointerEvent) => {
+		const node = dragRef.current;
+		if (!node) return;
+		const coords = toGraphCoords(event);
+		if (!coords) return;
+		node.fx = coords.x;
+		node.fy = coords.y;
+	};
+
+	const handlePointerUp = () => {
+		const node = dragRef.current;
+		if (!node) return;
+		node.fx = null;
+		node.fy = null;
+		dragRef.current = null;
+		simRef.current?.alphaTarget(0);
+	};
+
 	return (
 		<svg
 			ref={svgRef}
 			className="skills-graph"
 			viewBox="0 0 1920 1080"
 			preserveAspectRatio="xMidYMid meet"
+			onPointerMove={handlePointerMove}
+			onPointerUp={handlePointerUp}
+			onPointerCancel={handlePointerUp}
 		>
 			{links.map((link) => (
 				<line
@@ -149,6 +191,7 @@ export default function SkillsGraph() {
 					transform={`translate(${node.x}, ${node.y})`}
 					onMouseEnter={() => setActiveBranch(node.branch)}
 					onMouseLeave={() => setActiveBranch(null)}
+					onPointerDown={handleNodePointerDown(node)}
 				>
 					<circle className="node-dot" r={dotRadius(node.depth)} />
 					<text className="node-label" y={node.depth <= 1 ? -14 : -10}>

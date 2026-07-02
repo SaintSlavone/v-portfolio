@@ -22,7 +22,12 @@
 
 	.graph-node {
 		cursor: grab;
+		touch-action: none; // pointer dragging owns the gesture
 		transition: opacity 0.3s ease;
+
+		&:active {
+			cursor: grabbing;
+		}
 
 		&.dimmed {
 			opacity: 0.2;
