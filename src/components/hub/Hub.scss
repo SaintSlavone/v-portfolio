@@ -74,6 +74,49 @@
 	}
 }
 
+.quadrant-label {
+	@include text-nav-label;
+	position: absolute;
+
+	// Small marker dot under the label (matches Figma)
+	&::after {
+		content: "";
+		position: absolute;
+		left: 50%;
+		bottom: -16px;
+		width: 4px;
+		height: 4px;
+		transform: translateX(-50%);
+		background-color: $color-text-muted;
+	}
+}
+
+.hub-quadrant {
+	&.top .quadrant-label {
+		top: 18.5%;
+		left: 50%;
+		transform: translateX(-50%);
+	}
+
+	&.left .quadrant-label {
+		left: 15.5%;
+		top: 50%;
+		transform: translateY(-50%);
+	}
+
+	&.right .quadrant-label {
+		right: 13.5%;
+		top: 50%;
+		transform: translateY(-50%);
+	}
+
+	&.bottom .quadrant-label {
+		bottom: 19%;
+		left: 50%;
+		transform: translateX(-50%);
+	}
+}
+
 @media (prefers-reduced-motion: reduce) {
 	.hub-quadrant::before {
 		transition: none;
