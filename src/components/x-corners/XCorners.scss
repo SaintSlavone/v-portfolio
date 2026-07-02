@@ -98,6 +98,27 @@
 		--zone-gradient-direction: to top;
 		clip-path: polygon(18.75% 0, 81.25% 0, 100% 100%, 0 100%);
 	}
+
+	// Side zones are vertical strips; the arm inner edges cross the strip's
+	// inner border at 21% / 79% of the viewport height
+	&.left,
+	&.right {
+		top: 0;
+		width: 21vw;
+		height: 100vh;
+	}
+
+	&.left {
+		left: 0;
+		--zone-gradient-direction: to left;
+		clip-path: polygon(0 0, 100% 21%, 100% 79%, 0 100%);
+	}
+
+	&.right {
+		right: 0;
+		--zone-gradient-direction: to right;
+		clip-path: polygon(0 21%, 100% 0, 100% 100%, 0 79%);
+	}
 }
 
 // Mobile fallback: the zone and strokes give way to a wordmark back-link

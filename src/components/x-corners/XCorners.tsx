@@ -7,8 +7,16 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 interface XCornersProps {
-	position?: "top" | "bottom";
+	position?: "top" | "bottom" | "left" | "right";
 }
+
+// Which two viewport corners hold the decorative arms for each position
+const cornersByPosition = {
+	top: ["top-left", "top-right"],
+	bottom: ["bottom-left", "bottom-right"],
+	left: ["top-left", "bottom-left"],
+	right: ["top-right", "bottom-right"],
+} as const;
 
 // Return-to-hub affordance for interior pages (see Figma "Hub navigation"
 // annotation): the X area BETWEEN the two corner strokes is the hover/click
@@ -27,8 +35,8 @@ export default function XCorners({ position = "bottom" }: XCornersProps) {
 
 	return (
 		<>
-			{(["left", "right"] as const).map((side) => (
-				<span key={side} className={`x-corner ${position}-${side}`} aria-hidden="true">
+			{cornersByPosition[position].map((corner) => (
+				<span key={corner} className={`x-corner ${corner}`} aria-hidden="true">
 					<svg viewBox="0 0 400 260" preserveAspectRatio="none">
 						<line x1="-40" y1="10" x2="440" y2="290" />
 					</svg>
