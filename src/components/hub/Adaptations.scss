@@ -70,8 +70,13 @@
 		}
 	}
 
-	.hub-quadrant .quadrant-label {
+	// Match the specificity of the desktop position rules (.hub-quadrant.top …)
+	.hub-quadrant.top .quadrant-label,
+	.hub-quadrant.left .quadrant-label,
+	.hub-quadrant.right .quadrant-label,
+	.hub-quadrant.bottom .quadrant-label {
 		position: static;
+		inset: auto;
 		transform: none;
 		font-size: 1.875rem; // 30px on mobile
 
