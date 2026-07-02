@@ -156,7 +156,8 @@ const anchorStrength = (node: GraphNode) => {
 export default function SkillsGraph() {
 	const { nodes, links } = useMemo(() => buildGraph(skills), []);
 	const [, setFrame] = useState(0);
-	const [activeBranch, setActiveBranch] = useState<string | null>(null);
+	// Hover highlights the hovered node's subtree only (ids are path-based)
+	const [hoveredId, setHoveredId] = useState<string | null>(null);
 	const [pan, setPan] = useState(initialPan);
 	const [zoom, setZoom] = useState(1);
 	const svgRef = useRef<SVGSVGElement>(null);
@@ -164,6 +165,7 @@ export default function SkillsGraph() {
 	const panRef = useRef<{ startX: number; startY: number; panX: number; panY: number } | null>(
 		null,
 	);
+	const nodeDragRef = useRef<GraphNode | null>(null);
 	// Active pointers for pinch-zoom detection
 	const pointersRef = useRef(new Map<number, { x: number; y: number }>());
 	const pinchRef = useRef<{
@@ -226,6 +228,31 @@ export default function SkillsGraph() {
 		return { x, y };
 	};
 
+	// A node lights up when the hovered node is itself or one of its ancestors
+	const inHoveredSubtree = (id: string) =>
+		hoveredId !== null && (id === hoveredId || id.startsWith(`${hoveredId}/`));
+
+	const highlightClass = (id: string) =>
+		hoveredId ? (inHoveredSubtree(id) ? " active" : " dimmed") : "";
+
+	// ViewBox -> field coordinates (undo the pan/zoom transform)
+	const toFieldCoords = ({ x, y }: { x: number; y: number }) => ({
+		x: (x - pan.x) / zoom,
+		y: (y - pan.y) / zoom,
+	});
+
+	const handleNodePointerDown = (node: GraphNode) => (event: React.PointerEvent) => {
+		// The pinned root is not draggable
+		if (node.depth === 0) return;
+		// Keep the svg from starting a field pan
+		event.stopPropagation();
+		event.currentTarget.setPointerCapture(event.pointerId);
+		nodeDragRef.current = node;
+		node.fx = node.x;
+		node.fy = node.y;
+		simRef.current?.alphaTarget(0.3).restart();
+	};
+
 	// Rescale so the field point under `origin` stays under it after zooming
 	const zoomAround = (origin: { x: number; y: number }, nextZoom: number) => {
 		const clamped = clampZoom(nextZoom);
@@ -267,6 +294,15 @@ export default function SkillsGraph() {
 	const handlePointerMove = (event: React.PointerEvent) => {
 		const coords = toViewBoxCoords(event);
 		if (!coords) return;
+
+		const dragged = nodeDragRef.current;
+		if (dragged) {
+			const fieldCoords = toFieldCoords(coords);
+			dragged.fx = Math.max(bounds.minX, Math.min(bounds.maxX, fieldCoords.x));
+			dragged.fy = Math.max(bounds.minY, Math.min(bounds.maxY, fieldCoords.y));
+			return;
+		}
+
 		if (pointersRef.current.has(event.pointerId)) {
 			pointersRef.current.set(event.pointerId, coords);
 		}
@@ -299,6 +335,13 @@ export default function SkillsGraph() {
 	};
 
 	const handlePointerUp = (event: React.PointerEvent) => {
+		const dragged = nodeDragRef.current;
+		if (dragged) {
+			dragged.fx = null;
+			dragged.fy = null;
+			nodeDragRef.current = null;
+			simRef.current?.alphaTarget(0);
+		}
 		pointersRef.current.delete(event.pointerId);
 		pinchRef.current = null;
 		panRef.current = null;
@@ -320,9 +363,7 @@ export default function SkillsGraph() {
 				{links.map((link) => (
 					<line
 						key={`${link.source.id}-${link.target.id}`}
-						className={`graph-link${
-							activeBranch ? (link.branch === activeBranch ? " active" : " dimmed") : ""
-						}`}
+						className={`graph-link${highlightClass(link.source.id)}`}
 						x1={link.source.x}
 						y1={link.source.y}
 						x2={link.target.x}
@@ -332,12 +373,11 @@ export default function SkillsGraph() {
 				{nodes.map((node) => (
 					<g
 						key={node.id}
-						className={`graph-node depth-${node.depth}${
-							activeBranch ? (node.branch === activeBranch ? " active" : " dimmed") : ""
-						}`}
+						className={`graph-node depth-${node.depth}${highlightClass(node.id)}`}
 						transform={`translate(${node.x}, ${node.y})`}
-						onMouseEnter={() => setActiveBranch(node.branch)}
-						onMouseLeave={() => setActiveBranch(null)}
+						onMouseEnter={() => setHoveredId(node.id)}
+						onMouseLeave={() => setHoveredId(null)}
+						onPointerDown={handleNodePointerDown(node)}
 					>
 						<circle className="node-dot" r={dotRadius(node.depth)} />
 						<text className="node-label" y={node.depth <= 1 ? -14 : -10}>

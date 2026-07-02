@@ -45,7 +45,7 @@ export default function SkillsPage() {
 			<SkillsGraph />
 			<SkillsList branches={skills.children} />
 			<p className="skills-hint">
-				drag to move · scroll to zoom · hover a branch to highlight it
+				drag nodes or the field · scroll to zoom · hover to highlight
 			</p>
 		</main>
 	);
