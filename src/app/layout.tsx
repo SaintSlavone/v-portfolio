@@ -3,32 +3,30 @@ import { Inter, Montserrat } from "next/font/google";
 import "./Main.scss";
 
 const montserrat = Montserrat({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-montserrat",
+	subsets: ["latin"],
+	weight: ["400", "500", "600", "700"],
+	variable: "--font-montserrat",
 });
 
 const inter = Inter({
-  subsets: ["latin"],
-  weight: ["400", "600"],
-  variable: "--font-inter",
+	subsets: ["latin"],
+	weight: ["400", "600"],
+	variable: "--font-inter",
 });
 
 export const metadata: Metadata = {
-  title: "V",
-  description: "Viacheslav Portfolio",
+	title: "V",
+	description: "Viacheslav Portfolio",
 };
 
 export default function RootLayout({
-  children,
+	children,
 }: Readonly<{
-  children: React.ReactNode;
+	children: React.ReactNode;
 }>) {
-  return (
-    <html lang="en">
-      <body className={`${montserrat.variable} ${inter.variable}`}>
-        {children}
-      </body>
-    </html>
-  );
+	return (
+		<html lang="en">
+			<body className={`${montserrat.variable} ${inter.variable}`}>{children}</body>
+		</html>
+	);
 }
