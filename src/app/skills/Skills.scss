@@ -1,0 +1,6 @@
+@use "../../styles/tokens" as *;
+
+// Type roles for this page (see Figma "X Skills Page"):
+// title -> @include text-section-title;
+// hint  -> @include text-caption;   ("drag nodes to explore · hover a branch...")
+// graph labels: $font-body, 12-14px; branch heads weight 700

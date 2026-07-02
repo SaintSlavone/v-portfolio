@@ -1,0 +1,7 @@
+@use "../../styles/tokens" as *;
+
+// Type roles for this page (see Figma "X About Page"):
+// name  -> @include text-display;
+// role  -> @include text-subtitle;
+// bio   -> @include text-body;      (max-width: 840px, centered)
+// langs -> @include text-caption;

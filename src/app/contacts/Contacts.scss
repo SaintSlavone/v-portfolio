@@ -1,0 +1,8 @@
+@use "../../styles/tokens" as *;
+
+// Type roles for this page (see Figma "X Contact Page"):
+// title        -> @include text-section-title;
+// links        -> @include text-body;    (white, 22-26px)
+// location     -> @include text-caption;
+// placeholders -> @include text-caption;
+// send button  -> @include text-button;  (bg: $color-fg, color: $color-bg)

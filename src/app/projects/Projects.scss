@@ -1,0 +1,6 @@
+@use "../../styles/tokens" as *;
+
+// Type roles for this page (see Figma "X Projects Page"):
+// title      -> @include text-section-title;
+// card idle  -> greyscale static thumbnail ($color-card-idle placeholder)
+// card hover -> color + video playing (no text on cards by design)
