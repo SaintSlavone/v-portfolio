@@ -1,0 +1,16 @@
+{
+	"email": "viakostee@gmail.com",
+	"links": [
+		{
+			"label": "GitHub",
+			"handle": "github.com/SaintSlavone",
+			"href": "https://github.com/SaintSlavone"
+		},
+		{
+			"label": "LinkedIn",
+			"handle": "linkedin.com/in/vkost",
+			"href": "https://www.linkedin.com/in/vkost/"
+		}
+	],
+	"location": "Berlin, Germany"
+}
