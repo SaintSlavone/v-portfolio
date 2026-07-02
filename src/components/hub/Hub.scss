@@ -26,3 +26,26 @@
 	position: absolute;
 	inset: 0;
 }
+
+.hub-quadrant {
+	position: absolute;
+	inset: 0;
+	display: block;
+
+	// Each quadrant is an exact triangle — the clip-path also bounds the click area
+	&.top {
+		clip-path: polygon(0 0, 100% 0, 50% 50%);
+	}
+
+	&.left {
+		clip-path: polygon(0 0, 50% 50%, 0 100%);
+	}
+
+	&.right {
+		clip-path: polygon(100% 0, 50% 50%, 100% 100%);
+	}
+
+	&.bottom {
+		clip-path: polygon(0 100%, 50% 50%, 100% 100%);
+	}
+}
