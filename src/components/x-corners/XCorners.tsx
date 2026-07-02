@@ -1,6 +1,7 @@
 "use client";
 
 import "./XCorners.scss";
+import "./Adaptations.scss";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";

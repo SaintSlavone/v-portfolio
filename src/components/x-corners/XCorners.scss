@@ -114,17 +114,6 @@
 	color: $color-fg;
 }
 
-@media screen and (max-width: 600px) and (max-height: 1000px) and (orientation: portrait) {
-	.x-corner,
-	.x-return-zone {
-		display: none;
-	}
-
-	.x-corners-wordmark {
-		display: block;
-	}
-}
-
 @media (prefers-reduced-motion: reduce) {
 	.x-return-zone::before {
 		transition: none;

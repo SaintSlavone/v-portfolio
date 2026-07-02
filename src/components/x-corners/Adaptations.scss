@@ -1,0 +1,14 @@
+@use "../../styles/tokens" as *;
+
+// Corners and the return zone are too small / too subtle for touch —
+// the wordmark takes over as the back-to-home affordance on mobile
+@media screen and (max-width: 600px) and (max-height: 1000px) and (orientation: portrait) {
+	.x-corner,
+	.x-return-zone {
+		display: none;
+	}
+
+	.x-corners-wordmark {
+		display: block;
+	}
+}
