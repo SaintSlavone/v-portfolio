@@ -6,6 +6,12 @@
 	height: 100dvh;
 	overflow: hidden;
 	background-color: $color-bg;
+	// Subtle square grid texture (see Figma background)
+	background-image:
+		linear-gradient($color-grid 1px, transparent 1px),
+		linear-gradient(90deg, $color-grid 1px, transparent 1px);
+	background-size: 160px 160px;
+	background-position: center center;
 }
 
 .hub-x {
