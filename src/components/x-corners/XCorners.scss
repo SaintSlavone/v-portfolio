@@ -1,0 +1,110 @@
+@use "../../styles/tokens" as *;
+
+.x-corner {
+	position: fixed;
+	width: 21vw;
+	height: 24vh;
+	z-index: 5;
+	overflow: hidden;
+
+	svg {
+		width: 100%;
+		height: 100%;
+
+		line {
+			stroke: $color-fg;
+			stroke-width: 28;
+		}
+	}
+
+	// Hover: linear gradient toward the corner (same language as the hub quadrants)
+	&::before {
+		content: "";
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(
+			var(--corner-gradient-direction),
+			transparent 20%,
+			rgba(255, 255, 255, 0.18)
+		);
+		opacity: 0;
+		transition: opacity 0.4s ease;
+	}
+
+	&:hover::before,
+	&:focus-visible::before {
+		opacity: 1;
+	}
+
+	&:focus-visible {
+		outline: none;
+	}
+
+	// Base line is a "\" segment for bottom-left; the other corners are CSS flips
+	&.bottom-left {
+		bottom: 0;
+		left: 0;
+		--corner-gradient-direction: to bottom left;
+	}
+
+	&.bottom-right {
+		bottom: 0;
+		right: 0;
+		--corner-gradient-direction: to bottom right;
+
+		svg {
+			transform: scaleX(-1);
+		}
+	}
+
+	&.top-left {
+		top: 0;
+		left: 0;
+		--corner-gradient-direction: to top left;
+
+		svg {
+			transform: scaleY(-1);
+		}
+	}
+
+	&.top-right {
+		top: 0;
+		right: 0;
+		--corner-gradient-direction: to top right;
+
+		svg {
+			transform: scale(-1, -1);
+		}
+	}
+}
+
+// Mobile fallback: corners are too small to be a reliable touch target,
+// the wordmark takes over as the back-to-home affordance (see Adaptations)
+.x-corners-wordmark {
+	display: none;
+	position: fixed;
+	top: 24px;
+	left: 24px;
+	z-index: 6;
+	font-family: $font-heading;
+	font-size: 18px;
+	font-weight: 600;
+	letter-spacing: 0.15em;
+	color: $color-fg;
+}
+
+@media screen and (max-width: 600px) and (max-height: 1000px) and (orientation: portrait) {
+	.x-corner {
+		display: none;
+	}
+
+	.x-corners-wordmark {
+		display: block;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.x-corner::before {
+		transition: none;
+	}
+}
