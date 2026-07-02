@@ -1,4 +1,5 @@
 import "./About.scss";
+import "./Adaptations.scss";
 import about from "@/data/about.json";
 import XCorners from "@/components/x-corners/XCorners";
 
