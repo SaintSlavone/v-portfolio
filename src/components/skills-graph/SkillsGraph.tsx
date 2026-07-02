@@ -2,7 +2,7 @@
 
 import "./SkillsGraph.scss";
 import "./Adaptations.scss";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
 	forceCollide,
 	forceLink,
@@ -140,6 +140,18 @@ function buildGraph(tree: SkillTreeNode) {
 	return { nodes, links };
 }
 
+// Module-level singleton: d3-force mutates node objects in place, which the
+// React Compiler forbids for render-scoped values. The data is static JSON,
+// so the graph lives outside the component; rendering reads position
+// SNAPSHOTS from state (the compiler memoizes JSX by dependencies, so
+// reading mutated fields directly would render stale frames).
+const { nodes, links } = buildGraph(skills);
+
+type PositionMap = Record<string, { x: number; y: number }>;
+
+const snapshotPositions = (): PositionMap =>
+	Object.fromEntries(nodes.map((node) => [node.id, { x: node.x ?? 0, y: node.y ?? 0 }]));
+
 const dotRadius = (depth: number) => [6, 5, 4, 2.5][depth] ?? 2.5;
 const linkDistance = (depth: number) =>
 	([170, 135, 75][depth - 1] ?? 75) * FIELD_SCALE;
@@ -154,8 +166,7 @@ const anchorStrength = (node: GraphNode) => {
 };
 
 export default function SkillsGraph() {
-	const { nodes, links } = useMemo(() => buildGraph(skills), []);
-	const [, setFrame] = useState(0);
+	const [positions, setPositions] = useState<PositionMap>(snapshotPositions);
 	// Hover highlights the hovered node's subtree only (ids are path-based)
 	const [hoveredId, setHoveredId] = useState<string | null>(null);
 	const [pan, setPan] = useState(initialPan);
@@ -203,7 +214,7 @@ export default function SkillsGraph() {
 					node.x = Math.max(bounds.minX, Math.min(bounds.maxX, node.x ?? 0));
 					node.y = Math.max(bounds.minY, Math.min(bounds.maxY, node.y ?? 0));
 				}
-				setFrame((frame) => frame + 1);
+				setPositions(snapshotPositions());
 			});
 
 		// The root stays pinned like in the Figma composition
@@ -215,7 +226,7 @@ export default function SkillsGraph() {
 		return () => {
 			simulation.stop();
 		};
-	}, [nodes, links]);
+	}, []);
 
 	// Screen px -> viewBox coordinates (accounts for the meet scaling)
 	const toViewBoxCoords = (event: { clientX: number; clientY: number }) => {
@@ -364,17 +375,17 @@ export default function SkillsGraph() {
 					<line
 						key={`${link.source.id}-${link.target.id}`}
 						className={`graph-link${highlightClass(link.source.id)}`}
-						x1={link.source.x}
-						y1={link.source.y}
-						x2={link.target.x}
-						y2={link.target.y}
+						x1={positions[link.source.id]?.x}
+						y1={positions[link.source.id]?.y}
+						x2={positions[link.target.id]?.x}
+						y2={positions[link.target.id]?.y}
 					/>
 				))}
 				{nodes.map((node) => (
 					<g
 						key={node.id}
 						className={`graph-node depth-${node.depth}${highlightClass(node.id)}`}
-						transform={`translate(${node.x}, ${node.y})`}
+						transform={`translate(${positions[node.id]?.x ?? 0}, ${positions[node.id]?.y ?? 0})`}
 						onMouseEnter={() => setHoveredId(node.id)}
 						onMouseLeave={() => setHoveredId(null)}
 						onPointerDown={handleNodePointerDown(node)}
