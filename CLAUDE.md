@@ -35,7 +35,9 @@ Style extracted from my projects (brika, albarari) — follow it exactly:
 - CSS classes: kebab-case — `.project-card`, `.card-close-btn` (never camelCase or snake_case)
 - Component folders: kebab-case dir, PascalCase files — `project-card/ProjectCard.tsx` + `ProjectCard.scss`
 - Responsive styles go in a separate `Adaptations.scss` next to the component
-- SCSS: nest selectors under the single root class; import tokens with `@use "../../styles/tokens" as *;`
+- SCSS: ALL component selectors MUST be nested inside the single root class — `.hub { .hub-x { ... } }`; never write child classes as top-level siblings
+- Adaptation media queries (mobile): portrait — `@media screen and (max-width: 600px) and (max-height: 1000px) and (orientation: portrait)`; landscape — `@media screen and (max-width: 1000px) and (max-height: 600px) and (orientation: landscape)`
+- Import tokens with `@use "../../styles/tokens" as *;`
 - Components: default-export function, props destructured in signature, interface named `ComponentNameProps`
 - Event handlers: `handleX` internally, `onX` for callback props
 - Server Components by default, `"use client"` only when needed
