@@ -18,6 +18,21 @@ $color-grid: rgba(255, 255, 255, 0.06); // background grid lines
 $font-heading: var(--font-montserrat), sans-serif;
 $font-body: var(--font-inter), sans-serif;
 
+// ---- Surfaces ------------------------------------------------
+// Full-viewport page surface with the square grid texture (see Figma background)
+@mixin grid-surface {
+	position: relative;
+	width: 100vw;
+	height: 100dvh;
+	overflow: hidden;
+	background-color: $color-bg;
+	background-image:
+		linear-gradient($color-grid 1px, transparent 1px),
+		linear-gradient(90deg, $color-grid 1px, transparent 1px);
+	background-size: 160px 160px;
+	background-position: center center;
+}
+
 // ---- Type roles ---------------------------------------------
 // display — page hero name (About)
 @mixin text-display {
