@@ -1,0 +1,73 @@
+@use "../../styles/tokens" as *;
+
+.contact-form {
+	display: flex;
+	flex-direction: column;
+	width: min(880px, 92vw);
+	margin-top: 10vh;
+
+	.form-title {
+		@include text-section-title;
+		font-size: 1.5rem; // 24px
+		text-align: center;
+	}
+
+	.form-fields {
+		display: flex;
+		gap: 40px;
+		margin-top: 6vh;
+
+		.form-input {
+			flex: 1;
+			height: 56px;
+			padding: 0 20px;
+		}
+	}
+
+	.form-input,
+	.form-message {
+		background: transparent;
+		border: 1px solid $color-line;
+		color: $color-fg;
+		font-family: $font-body;
+		font-size: 1rem;
+		transition: border-color 0.3s ease;
+
+		&::placeholder {
+			color: $color-text-muted;
+		}
+
+		&:focus {
+			outline: none;
+			border-color: $color-fg;
+		}
+	}
+
+	.form-message {
+		margin-top: 24px;
+		height: 160px;
+		padding: 16px 20px;
+		resize: none;
+	}
+
+	.form-send {
+		@include text-button;
+		margin-top: 28px;
+		height: 56px;
+		border: none;
+		background: $color-fg;
+		color: $color-bg;
+		cursor: pointer;
+		transition: opacity 0.3s ease;
+
+		&:hover:not(:disabled),
+		&:focus-visible:not(:disabled) {
+			opacity: 0.85;
+		}
+
+		&:disabled {
+			opacity: 0.4;
+			cursor: not-allowed;
+		}
+	}
+}
