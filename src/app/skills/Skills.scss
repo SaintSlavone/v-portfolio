@@ -1,6 +1,30 @@
 @use "../../styles/tokens" as *;
 
-// Type roles for this page (see Figma "X Skills Page"):
-// title -> @include text-section-title;
-// hint  -> @include text-caption;   ("drag nodes to explore · hover a branch...")
-// graph labels: $font-body, 12-14px; branch heads weight 700
+// Type roles map to Figma "X Skills Page" — see tokens for the role definitions
+.skills {
+	@include grid-surface;
+
+	.skills-title {
+		@include text-section-title;
+		position: absolute;
+		top: 5vh;
+		left: 0;
+		width: 100%;
+		text-align: center;
+	}
+
+	.skills-hint {
+		@include text-caption;
+		position: absolute;
+		bottom: 3vh;
+		left: 0;
+		width: 100%;
+		text-align: center;
+	}
+
+	// The grouped list is the mobile / reduced-motion fallback —
+	// hidden on desktop where the graph renders (see Adaptations.scss)
+	.skills-list {
+		display: none;
+	}
+}
