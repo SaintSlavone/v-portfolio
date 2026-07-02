@@ -48,11 +48,7 @@
 				},
 				{
 					"name": "UI / UX",
-					"children": [
-						{ "name": "Responsive" },
-						{ "name": "Animations" },
-						{ "name": "SVG" }
-					]
+					"children": [{ "name": "Responsive" }, { "name": "Animations" }, { "name": "SVG" }]
 				}
 			]
 		},
@@ -87,8 +83,9 @@
 			"name": "DevOps",
 			"children": [
 				{ "name": "Linux" },
-				{ "name": "VPS deploy" },
+				{ "name": "VPS deploy", "children": [{ "name": "PM2" }, { "name": "Systemd" }] },
 				{ "name": "Nginx" },
+				{ "name": "Apache" },
 				{ "name": "SSL / TLS" },
 				{ "name": "Docker" },
 				{ "name": "Git / GitLab" }

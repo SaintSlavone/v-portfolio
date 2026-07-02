@@ -44,7 +44,7 @@ export default function SkillsPage() {
 			<h1 className="skills-title">Skills</h1>
 			<SkillsGraph />
 			<SkillsList branches={skills.children} />
-			<p className="skills-hint">drag nodes to explore · hover a branch to highlight it</p>
+			<p className="skills-hint">drag to move around · hover a branch to highlight it</p>
 		</main>
 	);
 }

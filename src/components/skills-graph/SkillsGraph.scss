@@ -5,6 +5,12 @@
 	inset: 0;
 	width: 100%;
 	height: 100%;
+	cursor: grab; // dragging pans the whole node field
+	touch-action: none;
+
+	&:active {
+		cursor: grabbing;
+	}
 
 	.graph-link {
 		stroke: rgba(255, 255, 255, 0.22);
@@ -21,13 +27,7 @@
 	}
 
 	.graph-node {
-		cursor: grab;
-		touch-action: none; // pointer dragging owns the gesture
 		transition: opacity 0.3s ease;
-
-		&:active {
-			cursor: grabbing;
-		}
 
 		&.dimmed {
 			opacity: 0.2;

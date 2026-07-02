@@ -36,28 +36,43 @@ interface GraphLink {
 	branch: string | null;
 }
 
-// Anchors matching the Figma composition: Frontend spreads across the
-// top half, Backend right-down, DevOps down, Tools left-down
+// The node field is 1.5x the viewport — the user pans the whole field
+// by dragging anywhere on it; nodes themselves are static (hover only)
+const FIELD_SCALE = 1.5;
+const viewport = { width: 1920, height: 1080 };
+const field = {
+	width: viewport.width * FIELD_SCALE,
+	height: viewport.height * FIELD_SCALE,
+};
+
+// Anchors matching the Figma composition (design coords, scaled to the field):
+// Frontend spreads across the top half, Backend right-down, DevOps down,
+// Tools left-down
+const scaled = ({ x, y }: { x: number; y: number }) => ({
+	x: x * FIELD_SCALE,
+	y: y * FIELD_SCALE,
+});
+
 const branchAnchors: Record<string, { x: number; y: number }> = {
-	Frontend: { x: 950, y: 400 },
-	Backend: { x: 1165, y: 690 },
-	DevOps: { x: 830, y: 780 },
-	Tools: { x: 645, y: 695 },
+	Frontend: scaled({ x: 950, y: 400 }),
+	Backend: scaled({ x: 1165, y: 690 }),
+	DevOps: scaled({ x: 830, y: 780 }),
+	Tools: scaled({ x: 645, y: 695 }),
 };
 
-// Depth-2 groups get their own anchors so clusters fill the canvas (see Figma)
+// Depth-2 groups get their own anchors so clusters fill the field (see Figma)
 const groupAnchors: Record<string, { x: number; y: number }> = {
-	Foundation: { x: 430, y: 390 },
-	React: { x: 700, y: 250 },
-	"Next.js": { x: 1080, y: 240 },
-	"3D & WebVR": { x: 1290, y: 330 },
-	"UI / UX": { x: 1370, y: 430 },
-	Express: { x: 1400, y: 710 },
-	Databases: { x: 1340, y: 810 },
-	Integrations: { x: 1250, y: 870 },
+	Foundation: scaled({ x: 430, y: 390 }),
+	React: scaled({ x: 700, y: 250 }),
+	"Next.js": scaled({ x: 1080, y: 240 }),
+	"3D & WebVR": scaled({ x: 1290, y: 330 }),
+	"UI / UX": scaled({ x: 1370, y: 430 }),
+	Express: scaled({ x: 1400, y: 710 }),
+	Databases: scaled({ x: 1340, y: 810 }),
+	Integrations: scaled({ x: 1250, y: 870 }),
 };
 
-const rootAnchor = { x: 930, y: 545 };
+const rootAnchor = scaled({ x: 930, y: 545 });
 
 const anchorFor = (node: GraphNode) => {
 	if (node.depth === 0) return rootAnchor;
@@ -69,8 +84,20 @@ const anchorFor = (node: GraphNode) => {
 	);
 };
 
-// Keep every node on the canvas regardless of forces
-const bounds = { minX: 70, maxX: 1850, minY: 100, maxY: 990 };
+// Keep every node inside the field regardless of forces
+const bounds = { minX: 90, maxX: field.width - 90, minY: 110, maxY: field.height - 110 };
+
+// The field can be panned until its far edge meets the viewport edge
+const clampPan = (x: number, y: number) => ({
+	x: Math.max(viewport.width - field.width, Math.min(0, x)),
+	y: Math.max(viewport.height - field.height, Math.min(0, y)),
+});
+
+// Start centered on the field
+const initialPan = clampPan(
+	(viewport.width - field.width) / 2,
+	(viewport.height - field.height) / 2,
+);
 
 function buildGraph(tree: SkillTreeNode) {
 	const nodes: GraphNode[] = [];
@@ -94,7 +121,7 @@ function buildGraph(tree: SkillTreeNode) {
 		// without Math.random(), so SSR and client render the same markup
 		const anchor = anchorFor(node);
 		const angle = nodes.length * 2.39996;
-		const radius = 20 + (nodes.length % 6) * 20;
+		const radius = 30 + (nodes.length % 6) * 30;
 		node.x = anchor.x + Math.cos(angle) * radius;
 		node.y = anchor.y + Math.sin(angle) * radius;
 		nodes.push(node);
@@ -107,7 +134,8 @@ function buildGraph(tree: SkillTreeNode) {
 }
 
 const dotRadius = (depth: number) => [6, 5, 4, 2.5][depth] ?? 2.5;
-const linkDistance = (depth: number) => [170, 135, 75][depth - 1] ?? 75;
+const linkDistance = (depth: number) =>
+	([170, 135, 75][depth - 1] ?? 75) * FIELD_SCALE;
 
 // Branch heads and anchored groups hold their Figma positions firmly;
 // leaves only drift toward their group
@@ -122,9 +150,12 @@ export default function SkillsGraph() {
 	const { nodes, links } = useMemo(() => buildGraph(skills), []);
 	const [, setFrame] = useState(0);
 	const [activeBranch, setActiveBranch] = useState<string | null>(null);
+	const [pan, setPan] = useState(initialPan);
 	const svgRef = useRef<SVGSVGElement>(null);
 	const simRef = useRef<Simulation<GraphNode, undefined> | null>(null);
-	const dragRef = useRef<GraphNode | null>(null);
+	const panRef = useRef<{ startX: number; startY: number; panX: number; panY: number } | null>(
+		null,
+	);
 
 	useEffect(() => {
 		const simulation = forceSimulation(nodes)
@@ -134,10 +165,10 @@ export default function SkillsGraph() {
 					.distance(({ target }) => linkDistance(target.depth))
 					.strength(0.9),
 			)
-			.force("charge", forceManyBody().strength(-150))
+			.force("charge", forceManyBody().strength(-180))
 			.force(
 				"collide",
-				forceCollide<GraphNode>((node) => (node.depth <= 1 ? 50 : 34)).strength(0.9),
+				forceCollide<GraphNode>((node) => (node.depth <= 1 ? 56 : 40)).strength(0.9),
 			)
 			.force(
 				"x",
@@ -167,7 +198,7 @@ export default function SkillsGraph() {
 	}, [nodes, links]);
 
 	// Screen px -> viewBox coordinates (accounts for the meet scaling)
-	const toGraphCoords = (event: React.PointerEvent) => {
+	const toViewBoxCoords = (event: React.PointerEvent) => {
 		const svg = svgRef.current;
 		if (!svg) return null;
 		const matrix = svg.getScreenCTM();
@@ -177,32 +208,25 @@ export default function SkillsGraph() {
 		return { x, y };
 	};
 
-	const handleNodePointerDown = (node: GraphNode) => (event: React.PointerEvent) => {
-		// The pinned root is not draggable
-		if (node.depth === 0) return;
+	const handlePointerDown = (event: React.PointerEvent) => {
+		const coords = toViewBoxCoords(event);
+		if (!coords) return;
 		event.currentTarget.setPointerCapture(event.pointerId);
-		dragRef.current = node;
-		node.fx = node.x;
-		node.fy = node.y;
-		simRef.current?.alphaTarget(0.3).restart();
+		panRef.current = { startX: coords.x, startY: coords.y, panX: pan.x, panY: pan.y };
 	};
 
 	const handlePointerMove = (event: React.PointerEvent) => {
-		const node = dragRef.current;
-		if (!node) return;
-		const coords = toGraphCoords(event);
+		const start = panRef.current;
+		if (!start) return;
+		const coords = toViewBoxCoords(event);
 		if (!coords) return;
-		node.fx = coords.x;
-		node.fy = coords.y;
+		setPan(
+			clampPan(start.panX + (coords.x - start.startX), start.panY + (coords.y - start.startY)),
+		);
 	};
 
 	const handlePointerUp = () => {
-		const node = dragRef.current;
-		if (!node) return;
-		node.fx = null;
-		node.fy = null;
-		dragRef.current = null;
-		simRef.current?.alphaTarget(0);
+		panRef.current = null;
 	};
 
 	return (
@@ -211,39 +235,41 @@ export default function SkillsGraph() {
 			className="skills-graph"
 			viewBox="0 0 1920 1080"
 			preserveAspectRatio="xMidYMid meet"
+			onPointerDown={handlePointerDown}
 			onPointerMove={handlePointerMove}
 			onPointerUp={handlePointerUp}
 			onPointerCancel={handlePointerUp}
 		>
-			{links.map((link) => (
-				<line
-					key={`${link.source.id}-${link.target.id}`}
-					className={`graph-link${
-						activeBranch ? (link.branch === activeBranch ? " active" : " dimmed") : ""
-					}`}
-					x1={link.source.x}
-					y1={link.source.y}
-					x2={link.target.x}
-					y2={link.target.y}
-				/>
-			))}
-			{nodes.map((node) => (
-				<g
-					key={node.id}
-					className={`graph-node depth-${node.depth}${
-						activeBranch ? (node.branch === activeBranch ? " active" : " dimmed") : ""
-					}`}
-					transform={`translate(${node.x}, ${node.y})`}
-					onMouseEnter={() => setActiveBranch(node.branch)}
-					onMouseLeave={() => setActiveBranch(null)}
-					onPointerDown={handleNodePointerDown(node)}
-				>
-					<circle className="node-dot" r={dotRadius(node.depth)} />
-					<text className="node-label" y={node.depth <= 1 ? -14 : -10}>
-						{node.name}
-					</text>
-				</g>
-			))}
+			<g className="graph-field" transform={`translate(${pan.x}, ${pan.y})`}>
+				{links.map((link) => (
+					<line
+						key={`${link.source.id}-${link.target.id}`}
+						className={`graph-link${
+							activeBranch ? (link.branch === activeBranch ? " active" : " dimmed") : ""
+						}`}
+						x1={link.source.x}
+						y1={link.source.y}
+						x2={link.target.x}
+						y2={link.target.y}
+					/>
+				))}
+				{nodes.map((node) => (
+					<g
+						key={node.id}
+						className={`graph-node depth-${node.depth}${
+							activeBranch ? (node.branch === activeBranch ? " active" : " dimmed") : ""
+						}`}
+						transform={`translate(${node.x}, ${node.y})`}
+						onMouseEnter={() => setActiveBranch(node.branch)}
+						onMouseLeave={() => setActiveBranch(null)}
+					>
+						<circle className="node-dot" r={dotRadius(node.depth)} />
+						<text className="node-label" y={node.depth <= 1 ? -14 : -10}>
+							{node.name}
+						</text>
+					</g>
+				))}
+			</g>
 		</svg>
 	);
 }
