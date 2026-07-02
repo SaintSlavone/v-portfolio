@@ -87,16 +87,23 @@ const anchorFor = (node: GraphNode) => {
 // Keep every node inside the field regardless of forces
 const bounds = { minX: 90, maxX: field.width - 90, minY: 110, maxY: field.height - 110 };
 
+// Zoom limits: min still covers the viewport (2880 * 0.7 > 1920), max 2x
+const ZOOM_MIN = 0.7;
+const ZOOM_MAX = 2;
+
+const clampZoom = (zoom: number) => Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, zoom));
+
 // The field can be panned until its far edge meets the viewport edge
-const clampPan = (x: number, y: number) => ({
-	x: Math.max(viewport.width - field.width, Math.min(0, x)),
-	y: Math.max(viewport.height - field.height, Math.min(0, y)),
+const clampPan = (x: number, y: number, zoom: number) => ({
+	x: Math.max(viewport.width - field.width * zoom, Math.min(0, x)),
+	y: Math.max(viewport.height - field.height * zoom, Math.min(0, y)),
 });
 
 // Start centered on the field
 const initialPan = clampPan(
 	(viewport.width - field.width) / 2,
 	(viewport.height - field.height) / 2,
+	1,
 );
 
 function buildGraph(tree: SkillTreeNode) {
@@ -151,11 +158,22 @@ export default function SkillsGraph() {
 	const [, setFrame] = useState(0);
 	const [activeBranch, setActiveBranch] = useState<string | null>(null);
 	const [pan, setPan] = useState(initialPan);
+	const [zoom, setZoom] = useState(1);
 	const svgRef = useRef<SVGSVGElement>(null);
 	const simRef = useRef<Simulation<GraphNode, undefined> | null>(null);
 	const panRef = useRef<{ startX: number; startY: number; panX: number; panY: number } | null>(
 		null,
 	);
+	// Active pointers for pinch-zoom detection
+	const pointersRef = useRef(new Map<number, { x: number; y: number }>());
+	const pinchRef = useRef<{
+		dist: number;
+		zoom: number;
+		midX: number;
+		midY: number;
+		panX: number;
+		panY: number;
+	} | null>(null);
 
 	useEffect(() => {
 		const simulation = forceSimulation(nodes)
@@ -198,7 +216,7 @@ export default function SkillsGraph() {
 	}, [nodes, links]);
 
 	// Screen px -> viewBox coordinates (accounts for the meet scaling)
-	const toViewBoxCoords = (event: React.PointerEvent) => {
+	const toViewBoxCoords = (event: { clientX: number; clientY: number }) => {
 		const svg = svgRef.current;
 		if (!svg) return null;
 		const matrix = svg.getScreenCTM();
@@ -208,24 +226,81 @@ export default function SkillsGraph() {
 		return { x, y };
 	};
 
+	// Rescale so the field point under `origin` stays under it after zooming
+	const zoomAround = (origin: { x: number; y: number }, nextZoom: number) => {
+		const clamped = clampZoom(nextZoom);
+		const fieldX = (origin.x - pan.x) / zoom;
+		const fieldY = (origin.y - pan.y) / zoom;
+		setZoom(clamped);
+		setPan(clampPan(origin.x - fieldX * clamped, origin.y - fieldY * clamped, clamped));
+	};
+
+	const handleWheel = (event: React.WheelEvent) => {
+		const coords = toViewBoxCoords(event);
+		if (!coords) return;
+		zoomAround(coords, zoom * (event.deltaY < 0 ? 1.12 : 1 / 1.12));
+	};
+
 	const handlePointerDown = (event: React.PointerEvent) => {
 		const coords = toViewBoxCoords(event);
 		if (!coords) return;
 		event.currentTarget.setPointerCapture(event.pointerId);
-		panRef.current = { startX: coords.x, startY: coords.y, panX: pan.x, panY: pan.y };
+		pointersRef.current.set(event.pointerId, coords);
+
+		if (pointersRef.current.size === 2) {
+			// Second finger down: switch from panning to pinching
+			panRef.current = null;
+			const [a, b] = [...pointersRef.current.values()];
+			pinchRef.current = {
+				dist: Math.hypot(b.x - a.x, b.y - a.y),
+				zoom,
+				midX: (a.x + b.x) / 2,
+				midY: (a.y + b.y) / 2,
+				panX: pan.x,
+				panY: pan.y,
+			};
+		} else {
+			panRef.current = { startX: coords.x, startY: coords.y, panX: pan.x, panY: pan.y };
+		}
 	};
 
 	const handlePointerMove = (event: React.PointerEvent) => {
-		const start = panRef.current;
-		if (!start) return;
 		const coords = toViewBoxCoords(event);
 		if (!coords) return;
+		if (pointersRef.current.has(event.pointerId)) {
+			pointersRef.current.set(event.pointerId, coords);
+		}
+
+		const pinch = pinchRef.current;
+		if (pinch && pointersRef.current.size === 2) {
+			const [a, b] = [...pointersRef.current.values()];
+			const dist = Math.hypot(b.x - a.x, b.y - a.y);
+			if (dist === 0 || pinch.dist === 0) return;
+			const nextZoom = clampZoom(pinch.zoom * (dist / pinch.dist));
+			// Keep the field point under the initial pinch midpoint stable
+			const fieldX = (pinch.midX - pinch.panX) / pinch.zoom;
+			const fieldY = (pinch.midY - pinch.panY) / pinch.zoom;
+			setZoom(nextZoom);
+			setPan(
+				clampPan(pinch.midX - fieldX * nextZoom, pinch.midY - fieldY * nextZoom, nextZoom),
+			);
+			return;
+		}
+
+		const start = panRef.current;
+		if (!start) return;
 		setPan(
-			clampPan(start.panX + (coords.x - start.startX), start.panY + (coords.y - start.startY)),
+			clampPan(
+				start.panX + (coords.x - start.startX),
+				start.panY + (coords.y - start.startY),
+				zoom,
+			),
 		);
 	};
 
-	const handlePointerUp = () => {
+	const handlePointerUp = (event: React.PointerEvent) => {
+		pointersRef.current.delete(event.pointerId);
+		pinchRef.current = null;
 		panRef.current = null;
 	};
 
@@ -239,8 +314,9 @@ export default function SkillsGraph() {
 			onPointerMove={handlePointerMove}
 			onPointerUp={handlePointerUp}
 			onPointerCancel={handlePointerUp}
+			onWheel={handleWheel}
 		>
-			<g className="graph-field" transform={`translate(${pan.x}, ${pan.y})`}>
+			<g className="graph-field" transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`}>
 				{links.map((link) => (
 					<line
 						key={`${link.source.id}-${link.target.id}`}
