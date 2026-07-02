@@ -12,125 +12,129 @@
 		linear-gradient(90deg, $color-grid 1px, transparent 1px);
 	background-size: 160px 160px;
 	background-position: center center;
-}
 
-// Wordmark and footer mail are mobile-only (see Adaptations.scss)
-.hub-wordmark,
-.hub-footer-mail {
-	display: none;
-}
-
-.hub-x {
-	position: absolute;
-	inset: 0;
-	width: 100%;
-	height: 100%;
-	pointer-events: none;
-	z-index: 2;
-
-	line {
-		stroke: $color-fg;
-		stroke-width: 28;
+	// Wordmark and footer mail are mobile-only (see Adaptations.scss)
+	.hub-wordmark,
+	.hub-footer-mail {
+		display: none;
 	}
-}
 
-.hub-nav {
-	position: absolute;
-	inset: 0;
-}
-
-.hub-quadrant {
-	position: absolute;
-	inset: 0;
-	display: block;
-
-	// Hover fill: gradient runs from the X center outward (see Figma hover state).
-	// Gradients can't transition, so it lives on ::before and fades via opacity.
-	&::before {
-		content: "";
+	.hub-x {
 		position: absolute;
 		inset: 0;
-		background: linear-gradient(var(--gradient-direction), transparent 25%, rgba(255, 255, 255, 0.18));
-		opacity: 0;
-		transition: opacity 0.4s ease;
+		width: 100%;
+		height: 100%;
+		pointer-events: none;
+		z-index: 2;
+
+		line {
+			stroke: $color-fg;
+			stroke-width: 28;
+		}
 	}
 
-	&:hover::before,
-	&:focus-visible::before {
-		opacity: 1;
-	}
-
-	&:focus-visible {
-		outline: none;
-	}
-
-	// Each quadrant is an exact triangle — the clip-path also bounds the click area
-	&.top {
-		--gradient-direction: to top;
-		clip-path: polygon(0 0, 100% 0, 50% 50%);
-	}
-
-	&.left {
-		--gradient-direction: to left;
-		clip-path: polygon(0 0, 50% 50%, 0 100%);
-	}
-
-	&.right {
-		--gradient-direction: to right;
-		clip-path: polygon(100% 0, 50% 50%, 100% 100%);
-	}
-
-	&.bottom {
-		--gradient-direction: to bottom;
-		clip-path: polygon(0 100%, 50% 50%, 100% 100%);
-	}
-}
-
-.quadrant-label {
-	@include text-nav-label;
-	position: absolute;
-
-	// Small marker dot under the label (matches Figma)
-	&::after {
-		content: "";
+	.hub-nav {
 		position: absolute;
-		left: 50%;
-		bottom: -16px;
-		width: 4px;
-		height: 4px;
-		transform: translateX(-50%);
-		background-color: $color-text-muted;
-	}
-}
-
-.hub-quadrant {
-	&.top .quadrant-label {
-		top: 18.5%;
-		left: 50%;
-		transform: translateX(-50%);
+		inset: 0;
 	}
 
-	&.left .quadrant-label {
-		left: 15.5%;
-		top: 50%;
-		transform: translateY(-50%);
-	}
+	.hub-quadrant {
+		position: absolute;
+		inset: 0;
+		display: block;
 
-	&.right .quadrant-label {
-		right: 13.5%;
-		top: 50%;
-		transform: translateY(-50%);
-	}
+		// Hover fill: gradient runs from the X center outward (see Figma hover state).
+		// Gradients can't transition, so it lives on ::before and fades via opacity.
+		&::before {
+			content: "";
+			position: absolute;
+			inset: 0;
+			background: linear-gradient(
+				var(--gradient-direction),
+				transparent 25%,
+				rgba(255, 255, 255, 0.18)
+			);
+			opacity: 0;
+			transition: opacity 0.4s ease;
+		}
 
-	&.bottom .quadrant-label {
-		bottom: 19%;
-		left: 50%;
-		transform: translateX(-50%);
+		&:hover::before,
+		&:focus-visible::before {
+			opacity: 1;
+		}
+
+		&:focus-visible {
+			outline: none;
+		}
+
+		.quadrant-label {
+			@include text-nav-label;
+			position: absolute;
+
+			// Small marker dot under the label (matches Figma)
+			&::after {
+				content: "";
+				position: absolute;
+				left: 50%;
+				bottom: -16px;
+				width: 4px;
+				height: 4px;
+				transform: translateX(-50%);
+				background-color: $color-text-muted;
+			}
+		}
+
+		// Each quadrant is an exact triangle — the clip-path also bounds the click area
+		&.top {
+			--gradient-direction: to top;
+			clip-path: polygon(0 0, 100% 0, 50% 50%);
+
+			.quadrant-label {
+				top: 18.5%;
+				left: 50%;
+				transform: translateX(-50%);
+			}
+		}
+
+		&.left {
+			--gradient-direction: to left;
+			clip-path: polygon(0 0, 50% 50%, 0 100%);
+
+			.quadrant-label {
+				left: 15.5%;
+				top: 50%;
+				transform: translateY(-50%);
+			}
+		}
+
+		&.right {
+			--gradient-direction: to right;
+			clip-path: polygon(100% 0, 50% 50%, 100% 100%);
+
+			.quadrant-label {
+				right: 13.5%;
+				top: 50%;
+				transform: translateY(-50%);
+			}
+		}
+
+		&.bottom {
+			--gradient-direction: to bottom;
+			clip-path: polygon(0 100%, 50% 50%, 100% 100%);
+
+			.quadrant-label {
+				bottom: 19%;
+				left: 50%;
+				transform: translateX(-50%);
+			}
+		}
 	}
 }
 
 @media (prefers-reduced-motion: reduce) {
-	.hub-quadrant::before {
-		transition: none;
+	.hub {
+		.hub-quadrant::before {
+			transition: none;
+		}
 	}
 }

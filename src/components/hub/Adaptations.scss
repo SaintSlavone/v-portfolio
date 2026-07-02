@@ -1,87 +1,109 @@
 @use "../../styles/tokens" as *;
 
-// Mobile hub (see Figma "Mobile / Hub — 390"): the X collapses into
+// Mobile portrait hub (see Figma "Mobile / Hub — 390"): the X collapses into
 // alternating diagonal dividers between stacked nav sections.
-@media (max-width: 768px) {
-	.hub-x {
-		display: none;
-	}
-
-	.hub-wordmark {
-		display: block;
-		position: absolute;
-		top: 24px;
-		left: 24px;
-		z-index: 3;
-		font-family: $font-heading;
-		font-size: 18px;
-		font-weight: 600;
-		letter-spacing: 0.15em;
-		color: $color-fg;
-	}
-
-	.hub-footer-mail {
-		display: block;
-		position: absolute;
-		bottom: 24px;
-		left: 0;
-		width: 100%;
-		z-index: 3;
-		text-align: center;
-		@include text-caption;
-	}
-
-	.hub-nav {
-		display: flex;
-		flex-direction: column;
-		padding: 15vh 0 12vh;
-	}
-
-	.hub-quadrant {
-		position: relative;
-		inset: auto;
-		flex: 1;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-
-		&.top,
-		&.left,
-		&.right,
-		&.bottom {
-			clip-path: none;
-			--gradient-direction: to right;
-		}
-
-		// Alternating diagonal dividers between sections
-		&:not(:last-child)::after {
-			content: "";
-			position: absolute;
-			bottom: 0;
-			left: 8%;
-			width: 84%;
-			height: 2px;
-			background-color: $color-fg;
-			transform: rotate(4deg);
-		}
-
-		&:nth-child(even):not(:last-child)::after {
-			transform: rotate(-4deg);
-		}
-	}
-
-	// Match the specificity of the desktop position rules (.hub-quadrant.top …)
-	.hub-quadrant.top .quadrant-label,
-	.hub-quadrant.left .quadrant-label,
-	.hub-quadrant.right .quadrant-label,
-	.hub-quadrant.bottom .quadrant-label {
-		position: static;
-		inset: auto;
-		transform: none;
-		font-size: 1.875rem; // 30px on mobile
-
-		&::after {
+@media screen and (max-width: 600px) and (max-height: 1000px) and (orientation: portrait) {
+	.hub {
+		.hub-x {
 			display: none;
+		}
+
+		.hub-wordmark {
+			display: block;
+			position: absolute;
+			top: 24px;
+			left: 24px;
+			z-index: 3;
+			font-family: $font-heading;
+			font-size: 18px;
+			font-weight: 600;
+			letter-spacing: 0.15em;
+			color: $color-fg;
+		}
+
+		.hub-footer-mail {
+			display: block;
+			position: absolute;
+			bottom: 24px;
+			left: 0;
+			width: 100%;
+			z-index: 3;
+			text-align: center;
+			@include text-caption;
+		}
+
+		.hub-nav {
+			display: flex;
+			flex-direction: column;
+			padding: 15vh 0 12vh;
+		}
+
+		.hub-quadrant {
+			position: relative;
+			inset: auto;
+			flex: 1;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+
+			&.top,
+			&.left,
+			&.right,
+			&.bottom {
+				clip-path: none;
+				--gradient-direction: to right;
+
+				.quadrant-label {
+					position: static;
+					inset: auto;
+					transform: none;
+					font-size: 1.875rem; // 30px on mobile
+
+					&::after {
+						display: none;
+					}
+				}
+			}
+
+			// Alternating diagonal dividers between sections
+			&:not(:last-child)::after {
+				content: "";
+				position: absolute;
+				bottom: 0;
+				left: 8%;
+				width: 84%;
+				height: 2px;
+				background-color: $color-fg;
+				transform: rotate(4deg);
+			}
+
+			&:nth-child(even):not(:last-child)::after {
+				transform: rotate(-4deg);
+			}
+		}
+	}
+}
+
+// Mobile landscape: the desktop X layout already fits a wide aspect —
+// only compact the labels so they clear the shallow X arms.
+@media screen and (max-width: 1000px) and (max-height: 600px) and (orientation: landscape) {
+	.hub {
+		.hub-quadrant {
+			.quadrant-label {
+				font-size: 1rem; // 16px
+
+				&::after {
+					bottom: -10px;
+				}
+			}
+
+			&.top .quadrant-label {
+				top: 13%;
+			}
+
+			&.bottom .quadrant-label {
+				bottom: 13%;
+			}
 		}
 	}
 }
