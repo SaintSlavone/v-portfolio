@@ -9,6 +9,12 @@
 			flex-direction: column;
 			gap: 16px;
 			margin-top: 4vh;
+
+			// flex: 1 collapses the height in column direction
+			.form-input {
+				flex: none;
+				height: 52px;
+			}
 		}
 
 		.form-message {
