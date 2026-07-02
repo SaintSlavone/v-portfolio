@@ -1,4 +1,5 @@
 import "./Hub.scss";
+import "./Adaptations.scss";
 import Link from "next/link";
 
 interface HubSection {
@@ -26,6 +27,7 @@ export default function Hub() {
 				<line x1="0" y1="0" x2="1920" y2="1080" />
 				<line x1="1920" y1="0" x2="0" y2="1080" />
 			</svg>
+			<span className="hub-wordmark">V K</span>
 			<nav className="hub-nav" aria-label="Main navigation">
 				{sections.map(({ href, label, position }) => (
 					<Link key={href} href={href} className={`hub-quadrant ${position}`}>
@@ -33,6 +35,9 @@ export default function Hub() {
 					</Link>
 				))}
 			</nav>
+			<a className="hub-footer-mail" href="mailto:viakostee@gmail.com">
+				viakostee@gmail.com
+			</a>
 		</main>
 	);
 }

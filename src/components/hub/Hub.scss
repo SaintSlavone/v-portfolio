@@ -14,6 +14,12 @@
 	background-position: center center;
 }
 
+// Wordmark and footer mail are mobile-only (see Adaptations.scss)
+.hub-wordmark,
+.hub-footer-mail {
+	display: none;
+}
+
 .hub-x {
 	position: absolute;
 	inset: 0;
