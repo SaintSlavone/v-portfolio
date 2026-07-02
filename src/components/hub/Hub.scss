@@ -8,6 +8,20 @@
 	background-color: $color-bg;
 }
 
+.hub-x {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	pointer-events: none;
+	z-index: 2;
+
+	line {
+		stroke: $color-fg;
+		stroke-width: 28;
+	}
+}
+
 .hub-nav {
 	position: absolute;
 	inset: 0;
