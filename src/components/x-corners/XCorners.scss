@@ -1,11 +1,13 @@
 @use "../../styles/tokens" as *;
 
+// Decorative cropped X arms — the interactive zone is .x-return-zone below
 .x-corner {
 	position: fixed;
 	width: 21vw;
 	height: 24vh;
 	z-index: 5;
 	overflow: hidden;
+	pointer-events: none;
 
 	svg {
 		width: 100%;
@@ -17,15 +19,59 @@
 		}
 	}
 
-	// Hover: linear gradient toward the corner (same language as the hub quadrants)
+	// Base line is a "\" segment for bottom-left; the other corners are CSS flips
+	&.bottom-left {
+		bottom: 0;
+		left: 0;
+	}
+
+	&.bottom-right {
+		bottom: 0;
+		right: 0;
+
+		svg {
+			transform: scaleX(-1);
+		}
+	}
+
+	&.top-left {
+		top: 0;
+		left: 0;
+
+		svg {
+			transform: scaleY(-1);
+		}
+	}
+
+	&.top-right {
+		top: 0;
+		right: 0;
+
+		svg {
+			transform: scale(-1, -1);
+		}
+	}
+}
+
+// The X area between the two strokes: a trapezoid bounded by the arms'
+// inner edges. Hover reveals the linear gradient (see Figma About page);
+// the clip-path also bounds the click area.
+.x-return-zone {
+	position: fixed;
+	left: 0;
+	width: 100vw;
+	height: 24vh;
+	z-index: 4;
+	display: block;
+
 	&::before {
 		content: "";
 		position: absolute;
 		inset: 0;
 		background: linear-gradient(
-			var(--corner-gradient-direction),
-			transparent 20%,
-			rgba(255, 255, 255, 0.18)
+			var(--zone-gradient-direction),
+			transparent,
+			rgba(255, 255, 255, 0.16)
 		);
 		opacity: 0;
 		transition: opacity 0.4s ease;
@@ -40,46 +86,21 @@
 		outline: none;
 	}
 
-	// Base line is a "\" segment for bottom-left; the other corners are CSS flips
-	&.bottom-left {
+	// Arms hit the screen edge at 18.75% / 81.25% of the width (see Figma)
+	&.bottom {
 		bottom: 0;
-		left: 0;
-		--corner-gradient-direction: to bottom left;
+		--zone-gradient-direction: to bottom;
+		clip-path: polygon(0 0, 100% 0, 81.25% 100%, 18.75% 100%);
 	}
 
-	&.bottom-right {
-		bottom: 0;
-		right: 0;
-		--corner-gradient-direction: to bottom right;
-
-		svg {
-			transform: scaleX(-1);
-		}
-	}
-
-	&.top-left {
+	&.top {
 		top: 0;
-		left: 0;
-		--corner-gradient-direction: to top left;
-
-		svg {
-			transform: scaleY(-1);
-		}
-	}
-
-	&.top-right {
-		top: 0;
-		right: 0;
-		--corner-gradient-direction: to top right;
-
-		svg {
-			transform: scale(-1, -1);
-		}
+		--zone-gradient-direction: to top;
+		clip-path: polygon(18.75% 0, 81.25% 0, 100% 100%, 0 100%);
 	}
 }
 
-// Mobile fallback: corners are too small to be a reliable touch target,
-// the wordmark takes over as the back-to-home affordance (see Adaptations)
+// Mobile fallback: the zone and strokes give way to a wordmark back-link
 .x-corners-wordmark {
 	display: none;
 	position: fixed;
@@ -94,7 +115,8 @@
 }
 
 @media screen and (max-width: 600px) and (max-height: 1000px) and (orientation: portrait) {
-	.x-corner {
+	.x-corner,
+	.x-return-zone {
 		display: none;
 	}
 
@@ -104,7 +126,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-	.x-corner::before {
+	.x-return-zone::before {
 		transition: none;
 	}
 }

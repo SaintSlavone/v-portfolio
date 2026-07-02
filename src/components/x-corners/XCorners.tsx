@@ -10,8 +10,9 @@ interface XCornersProps {
 }
 
 // Return-to-hub affordance for interior pages (see Figma "Hub navigation"
-// annotation): cropped X arms in two corners; hovering shows a linear
-// gradient, clicking returns to the hub. ESC returns as well.
+// annotation): the X area BETWEEN the two corner strokes is the hover/click
+// zone — hovering it reveals a linear gradient, clicking returns to the hub.
+// The strokes themselves are decoration. ESC returns as well.
 export default function XCorners({ position = "bottom" }: XCornersProps) {
 	const router = useRouter();
 
@@ -26,17 +27,17 @@ export default function XCorners({ position = "bottom" }: XCornersProps) {
 	return (
 		<>
 			{(["left", "right"] as const).map((side) => (
-				<Link
-					key={side}
-					href="/"
-					aria-label="Back to home"
-					className={`x-corner ${position}-${side}`}
-				>
-					<svg viewBox="0 0 400 260" preserveAspectRatio="none" aria-hidden="true">
+				<span key={side} className={`x-corner ${position}-${side}`} aria-hidden="true">
+					<svg viewBox="0 0 400 260" preserveAspectRatio="none">
 						<line x1="-40" y1="10" x2="440" y2="290" />
 					</svg>
-				</Link>
+				</span>
 			))}
+			<Link
+				href="/"
+				aria-label="Back to home"
+				className={`x-return-zone ${position}`}
+			/>
 			<Link href="/" className="x-corners-wordmark" aria-label="Back to home">
 				V K
 			</Link>
