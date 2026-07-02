@@ -2,6 +2,7 @@ import "./Contacts.scss";
 import "./Adaptations.scss";
 import contacts from "@/data/contacts.json";
 import XCorners from "@/components/x-corners/XCorners";
+import ContactForm from "@/components/contact-form/ContactForm";
 
 export default function ContactsPage() {
 	return (
@@ -23,6 +24,7 @@ export default function ContactsPage() {
 				))}
 				<li className="contacts-row contacts-location">{contacts.location}</li>
 			</ul>
+			<ContactForm />
 		</main>
 	);
 }
