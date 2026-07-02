@@ -32,20 +32,50 @@
 	inset: 0;
 	display: block;
 
+	// Hover fill: gradient runs from the X center outward (see Figma hover state).
+	// Gradients can't transition, so it lives on ::before and fades via opacity.
+	&::before {
+		content: "";
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(var(--gradient-direction), transparent 25%, rgba(255, 255, 255, 0.18));
+		opacity: 0;
+		transition: opacity 0.4s ease;
+	}
+
+	&:hover::before,
+	&:focus-visible::before {
+		opacity: 1;
+	}
+
+	&:focus-visible {
+		outline: none;
+	}
+
 	// Each quadrant is an exact triangle — the clip-path also bounds the click area
 	&.top {
+		--gradient-direction: to top;
 		clip-path: polygon(0 0, 100% 0, 50% 50%);
 	}
 
 	&.left {
+		--gradient-direction: to left;
 		clip-path: polygon(0 0, 50% 50%, 0 100%);
 	}
 
 	&.right {
+		--gradient-direction: to right;
 		clip-path: polygon(100% 0, 50% 50%, 100% 100%);
 	}
 
 	&.bottom {
+		--gradient-direction: to bottom;
 		clip-path: polygon(0 100%, 50% 50%, 100% 100%);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.hub-quadrant::before {
+		transition: none;
 	}
 }
