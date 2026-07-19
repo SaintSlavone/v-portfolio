@@ -1,0 +1,82 @@
+@use "../../styles/tokens" as *;
+
+// Portrait phones: window shrinks to a wide band, controls pull inward
+// so the chevrons stay reachable next to the window edges
+@media screen and (max-width: 600px) and (max-height: 1000px) and (orientation: portrait) {
+	.project-gallery {
+		.gallery-window {
+			width: 92vw;
+			height: 56vh;
+		}
+
+		.gallery-info {
+			.info-meta,
+			.info-stack {
+				font-size: 1rem;
+			}
+
+			.info-links {
+				flex-direction: column;
+				gap: 24px;
+			}
+		}
+
+		.gallery-close {
+			top: 16px;
+			right: 16px;
+
+			svg {
+				width: 28px;
+				height: 28px;
+			}
+		}
+
+		.gallery-prev,
+		.gallery-next {
+			svg {
+				width: 18px;
+				height: 36px;
+			}
+		}
+
+		.gallery-prev {
+			left: 4px;
+		}
+
+		.gallery-next {
+			right: 4px;
+		}
+	}
+}
+
+@media screen and (max-width: 1000px) and (max-height: 600px) and (orientation: landscape) {
+	.project-gallery {
+		.gallery-window {
+			width: 84vw;
+			height: 84vh;
+		}
+
+		.gallery-info {
+			.info-meta,
+			.info-stack {
+				font-size: 1rem;
+			}
+		}
+
+		.gallery-close {
+			top: 12px;
+			right: 12px;
+
+			svg {
+				width: 28px;
+				height: 28px;
+			}
+		}
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.project-gallery {
+		animation: none;
+	}
+}
