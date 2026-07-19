@@ -1,0 +1,118 @@
+[
+	{
+		"id": "ellington",
+		"name": "Ellington Properties",
+		"role": "Sole frontend developer",
+		"years": "2023 — 2024",
+		"duration": "8 months",
+		"stack": ["Next.js", "Three.js", "Mapbox GL", "Node.js"],
+		"links": {
+			"live": "https://example.com/ellington",
+			"github": "https://github.com/SaintSlavone"
+		},
+		"thumbnail": "/project-imgs/ellington.jpg",
+		"video": "/project-videos/ellington.mp4",
+		"gallery": [
+			"/project-imgs/galleries/ellington-gallerie/2.png",
+			"/project-imgs/galleries/ellington-gallerie/3.png",
+			"/project-imgs/galleries/ellington-gallerie/4.png",
+			"/project-imgs/galleries/ellington-gallerie/5.png",
+			"/project-imgs/galleries/ellington-gallerie/6.png",
+			"/project-imgs/galleries/ellington-gallerie/7.png",
+			"/project-imgs/galleries/ellington-gallerie/8.png",
+			"/project-imgs/galleries/ellington-gallerie/9.png"
+		]
+	},
+	{
+		"id": "albarari",
+		"name": "Al Barari",
+		"role": "Sole frontend developer",
+		"years": "2024 — 2025",
+		"duration": "6 months",
+		"stack": ["Next.js", "TypeScript", "SCSS", "krpano"],
+		"links": {
+			"live": "https://example.com/albarari",
+			"github": null
+		},
+		"thumbnail": "/project-imgs/albarari.jpg",
+		"video": "/project-videos/albarari.mp4",
+		"gallery": [
+			"/project-imgs/galleries/albarari-gallerie/3.jpg",
+			"/project-imgs/galleries/albarari-gallerie/4.jpg"
+		]
+	},
+	{
+		"id": "niseko",
+		"name": "Niseko Masterplan",
+		"role": "Frontend developer",
+		"years": "2024",
+		"duration": "4 months",
+		"stack": ["React", "Mapbox GL", "SVG", "SCSS"],
+		"links": {
+			"live": "https://example.com/niseko",
+			"github": null
+		},
+		"thumbnail": "/project-imgs/niseko.jpg",
+		"video": "/project-videos/niseko.mp4",
+		"gallery": [
+			"/project-imgs/galleries/niseko-gallerie/2.png",
+			"/project-imgs/galleries/niseko-gallerie/3.png",
+			"/project-imgs/galleries/niseko-gallerie/4.png"
+		]
+	},
+	{
+		"id": "krpano2",
+		"name": "Virtual Tour Engine",
+		"role": "Sole developer",
+		"years": "2023",
+		"duration": "5 months",
+		"stack": ["krpano", "JavaScript", "Node.js"],
+		"links": {
+			"live": "https://example.com/krpano",
+			"github": "https://github.com/SaintSlavone"
+		},
+		"thumbnail": "/project-imgs/krpano2.jpg",
+		"video": "/project-videos/krpano2.mp4",
+		"gallery": []
+	},
+	{
+		"id": "alaqtar",
+		"name": "Al Aqtar",
+		"role": "Frontend developer",
+		"years": "2025",
+		"duration": "3 months",
+		"stack": ["Next.js", "Three.js", "SCSS"],
+		"links": {
+			"live": "https://example.com/alaqtar",
+			"github": null
+		},
+		"thumbnail": "/project-imgs/alaqtar.jpg",
+		"video": "/project-videos/alaqtar.mp4",
+		"gallery": [
+			"/project-imgs/galleries/alaqtar-gallerie/2.png",
+			"/project-imgs/galleries/alaqtar-gallerie/3.png",
+			"/project-imgs/galleries/alaqtar-gallerie/4.png",
+			"/project-imgs/galleries/alaqtar-gallerie/5.png"
+		]
+	},
+	{
+		"id": "saas",
+		"name": "SaaS Platform",
+		"role": "Sole frontend developer",
+		"years": "2025",
+		"duration": "ongoing",
+		"stack": ["Next.js", "TypeScript", "Node.js", "PostgreSQL"],
+		"links": {
+			"live": "https://example.com/saas",
+			"github": "https://github.com/SaintSlavone"
+		},
+		"thumbnail": "/project-imgs/saas.jpg",
+		"video": "/project-videos/saas.mp4",
+		"gallery": [
+			"/project-imgs/galleries/saas-gallerie/2.png",
+			"/project-imgs/galleries/saas-gallerie/3.png",
+			"/project-imgs/galleries/saas-gallerie/4.png",
+			"/project-imgs/galleries/saas-gallerie/5.png"
+		]
+	}
+]
