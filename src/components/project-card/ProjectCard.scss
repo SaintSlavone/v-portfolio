@@ -1,0 +1,46 @@
+@use "../../styles/tokens" as *;
+
+// Card states map to Figma "X Projects Page": grey idle thumbnail,
+// color + playing video on hover. No text on cards by design.
+.project-card {
+	position: relative;
+	display: block;
+	width: 100%;
+	height: 100%;
+	padding: 0;
+	border: none;
+	overflow: hidden;
+	background-color: $color-card-idle;
+	cursor: pointer;
+
+	.card-thumb {
+		object-fit: cover;
+		filter: grayscale(1);
+		transition: filter 0.4s ease;
+	}
+
+	.card-video {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		opacity: 0;
+		transition: opacity 0.4s ease;
+	}
+
+	&.is-active {
+		.card-thumb {
+			filter: grayscale(0);
+		}
+
+		.card-video {
+			opacity: 1;
+		}
+	}
+
+	&:focus-visible {
+		outline: 2px solid $color-fg;
+		outline-offset: 4px;
+	}
+}

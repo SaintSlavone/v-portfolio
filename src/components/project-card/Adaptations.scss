@@ -1,0 +1,25 @@
+@use "../../styles/tokens" as *;
+
+// Touch devices have no hover — show thumbnails in color so mobile
+// users are not locked out of the grey idle state
+@media screen and (max-width: 600px) and (max-height: 1000px) and (orientation: portrait) {
+	.project-card {
+		.card-thumb {
+			filter: grayscale(0);
+		}
+	}
+}
+
+// No autoplaying preview for reduced-motion users; hover still
+// reveals color so the interaction stays legible
+@media (prefers-reduced-motion: reduce) {
+	.project-card {
+		.card-thumb {
+			transition: none;
+		}
+
+		.card-video {
+			display: none;
+		}
+	}
+}
