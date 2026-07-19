@@ -1,0 +1,46 @@
+@use "../../styles/tokens" as *;
+
+// Portrait phones: the fixed 3/1/2 rhythm collapses into a single
+// column; cards keep a uniform aspect instead of the row heights
+@media screen and (max-width: 600px) and (max-height: 1000px) and (orientation: portrait) {
+	.projects {
+		padding: 12vh 24px 10vh;
+
+		.projects-title {
+			top: 5vh;
+		}
+
+		.projects-grid {
+			gap: 24px;
+
+			.grid-row {
+				&.row-top,
+				&.row-wide,
+				&.row-bottom {
+					grid-template-columns: 1fr;
+					row-gap: 24px;
+					height: auto;
+				}
+
+				.project-card {
+					aspect-ratio: 16 / 9;
+				}
+			}
+		}
+	}
+}
+
+@media screen and (max-width: 1000px) and (max-height: 600px) and (orientation: landscape) {
+	.projects {
+		padding-top: 14vh;
+
+		.projects-title {
+			top: 5vh;
+			font-size: 1.125rem;
+		}
+
+		.projects-grid {
+			gap: 6vh;
+		}
+	}
+}

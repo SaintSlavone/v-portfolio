@@ -4,3 +4,53 @@
 // title      -> @include text-section-title;
 // card idle  -> greyscale static thumbnail ($color-card-idle placeholder)
 // card hover -> color + video playing (no text on cards by design)
+.projects {
+	@include grid-surface;
+	// Row 3 extends past the fold in the design — this page scrolls
+	width: 100%;
+	height: auto;
+	min-height: 100dvh;
+	overflow: visible;
+	padding: 7.2vh 5.5vw 10vh;
+
+	.projects-title {
+		@include text-section-title;
+		position: absolute;
+		top: 3.7vh;
+		left: 0;
+		width: 100%;
+		text-align: center;
+	}
+
+	// Figma geometry (1920×1080): rows of 628/297/628, 1707 full-width,
+	// 833/833 — the rows do not share column lines, so each row is its
+	// own grid instead of one common template
+	.projects-grid {
+		display: flex;
+		flex-direction: column;
+		gap: 9.3vh;
+		max-width: 1707px;
+		margin: 0 auto;
+
+		.grid-row {
+			display: grid;
+
+			&.row-top {
+				grid-template-columns: 628fr 297fr 628fr;
+				column-gap: 4vw;
+				height: 29vh;
+			}
+
+			&.row-wide {
+				grid-template-columns: 1fr;
+				height: 29vh;
+			}
+
+			&.row-bottom {
+				grid-template-columns: 1fr 1fr;
+				column-gap: 2.1vw;
+				height: 38.5vh;
+			}
+		}
+	}
+}
