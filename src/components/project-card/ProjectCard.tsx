@@ -4,23 +4,21 @@ import "./ProjectCard.scss";
 import "./Adaptations.scss";
 import Image from "next/image";
 import { useRef, useState } from "react";
+import ProjectGallery, {
+	Project,
+} from "@/components/project-gallery/ProjectGallery";
 
 interface ProjectCardProps {
-	name: string;
-	thumbnail: string;
-	video: string;
+	project: Project;
 }
 
 // Card behavior per Figma "X Projects Page" annotation: idle — grey static
 // thumbnail with no text (intentional); hover — color + preview video playing
-// (muted, loop). Click will open the iframe gallery overlay (next step).
-export default function ProjectCard({
-	name,
-	thumbnail,
-	video,
-}: ProjectCardProps) {
+// (muted, loop); click — the iframe gallery overlay.
+export default function ProjectCard({ project }: ProjectCardProps) {
 	const videoRef = useRef<HTMLVideoElement>(null);
 	const [active, setActive] = useState(false);
+	const [galleryOpen, setGalleryOpen] = useState(false);
 
 	const handleActivate = () => {
 		setActive(true);
@@ -37,32 +35,47 @@ export default function ProjectCard({
 		}
 	};
 
+	const handleOpen = () => {
+		// The preview keeps looping under the overlay otherwise
+		handleDeactivate();
+		setGalleryOpen(true);
+	};
+
 	return (
-		<button
-			type="button"
-			className={`project-card${active ? " is-active" : ""}`}
-			aria-label={`Open ${name} gallery`}
-			onMouseEnter={handleActivate}
-			onMouseLeave={handleDeactivate}
-			onFocus={handleActivate}
-			onBlur={handleDeactivate}
-		>
-			<Image
-				className="card-thumb"
-				src={thumbnail}
-				alt=""
-				fill
-				sizes="(max-width: 600px) 100vw, 89vw"
-			/>
-			<video
-				ref={videoRef}
-				className="card-video"
-				src={video}
-				muted
-				loop
-				playsInline
-				preload="none"
-			/>
-		</button>
+		<>
+			<button
+				type="button"
+				className={`project-card${active ? " is-active" : ""}`}
+				aria-label={`Open ${project.name} gallery`}
+				onMouseEnter={handleActivate}
+				onMouseLeave={handleDeactivate}
+				onFocus={handleActivate}
+				onBlur={handleDeactivate}
+				onClick={handleOpen}
+			>
+				<Image
+					className="card-thumb"
+					src={project.thumbnail}
+					alt=""
+					fill
+					sizes="(max-width: 600px) 100vw, 89vw"
+				/>
+				<video
+					ref={videoRef}
+					className="card-video"
+					src={project.video}
+					muted
+					loop
+					playsInline
+					preload="none"
+				/>
+			</button>
+			{galleryOpen && (
+				<ProjectGallery
+					project={project}
+					onClose={() => setGalleryOpen(false)}
+				/>
+			)}
+		</>
 	);
 }

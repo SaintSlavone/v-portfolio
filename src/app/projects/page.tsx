@@ -18,12 +18,7 @@ export default function ProjectsPage() {
 				{rows.map((row, index) => (
 					<div key={rowClasses[index]} className={`grid-row ${rowClasses[index]}`}>
 						{row.map((project) => (
-							<ProjectCard
-								key={project.id}
-								name={project.name}
-								thumbnail={project.thumbnail}
-								video={project.video}
-							/>
+							<ProjectCard key={project.id} project={project} />
 						))}
 					</div>
 				))}
