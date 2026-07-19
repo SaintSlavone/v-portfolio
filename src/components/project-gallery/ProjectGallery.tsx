@@ -89,6 +89,10 @@ export default function ProjectGallery({
 			role="dialog"
 			aria-modal="true"
 			aria-label={`${project.name} gallery`}
+			onClick={(event) => {
+				// Backdrop only — ignore clicks bubbling from the window/controls
+				if (event.target === event.currentTarget) onClose();
+			}}
 		>
 			<div className="gallery-window">
 				{slide.type === "video" && (
