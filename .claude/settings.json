@@ -1,5 +1,9 @@
 {
-  "enabledPlugins": {
-    "designagent@designagent": true
-  }
+	"enabledPlugins": {
+		"designagent@designagent": true
+	},
+	"attribution": {
+		"commit": "",
+		"pr": ""
+	}
 }
