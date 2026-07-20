@@ -1,11 +1,10 @@
 @use "../../styles/tokens" as *;
 
-// The 42px welcoming line overflows narrow phones — scale it down so
-// "V Kostenko Presents" stays on one line
+// The 42px tail overflows narrow phones — scale it down so
+// "Kostenko Presents" stays on one line before it collapses
 @media screen and (max-width: 600px) and (max-height: 1000px) and (orientation: portrait) {
 	.intro {
-		.intro-presents,
-		.intro-chevron {
+		.intro-tail-inner {
 			font-size: 1.5rem; // 24px
 		}
 	}
@@ -13,8 +12,7 @@
 
 @media screen and (max-width: 1000px) and (max-height: 600px) and (orientation: landscape) {
 	.intro {
-		.intro-presents,
-		.intro-chevron {
+		.intro-tail-inner {
 			font-size: 2rem; // 32px
 		}
 	}

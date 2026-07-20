@@ -4,19 +4,25 @@ import "./Intro.scss";
 import "./Adaptations.scss";
 import { useEffect, useRef, useState } from "react";
 
-type Phase = "presents" | "chevron" | "draw" | "out";
+type Phase = "presents" | "slide" | "rotate" | "draw" | "out";
 
 const SESSION_KEY = "intro-played";
 
-// Cumulative timeline (ms). Full sequence is 3s per the Figma "X Welcoming
-// Page" annotation: Presents → ">" transition → X draw-in, then reveal hub.
+// Cumulative timeline (ms) for the beats described from the Figma frames:
+//  presents — "V Kostenko Presents" (V is the SVG chevron, rest is text)
+//  slide    — "Kostenko Presents" slides left and hides behind the V
+//  rotate   — the lone V (SVG chevron) rotates 90° into a ">"
+//  draw     — the chevron's arms extend into the X's legs and the remaining
+//             legs draw in; the finished X lands exactly on the hub X
+//  out      — the overlay fades to reveal the hub underneath
 const TIMELINE: { phase: Phase; at: number }[] = [
 	{ phase: "presents", at: 0 },
-	{ phase: "chevron", at: 1300 },
-	{ phase: "draw", at: 1750 },
-	{ phase: "out", at: 2600 },
+	{ phase: "slide", at: 1000 },
+	{ phase: "rotate", at: 1750 },
+	{ phase: "draw", at: 2350 },
+	{ phase: "out", at: 3200 },
 ];
-const TOTAL = 3000;
+const TOTAL = 3600;
 
 // Overlays the hub and plays once per browser session, then unmounts to
 // reveal the hub underneath. Reduced-motion users skip straight to the hub.
@@ -28,9 +34,7 @@ export default function Intro() {
 	// Gate: only the first visit of a session animates
 	useEffect(() => {
 		if (sessionStorage.getItem(SESSION_KEY)) return;
-		const reduceMotion = window.matchMedia(
-			"(prefers-reduced-motion: reduce)",
-		).matches;
+		const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 		if (reduceMotion) {
 			sessionStorage.setItem(SESSION_KEY, "1");
 			return;
@@ -77,15 +81,22 @@ export default function Intro() {
 	return (
 		<div className={`intro intro-phase-${phase}`} aria-hidden="true">
 			<div className="intro-grid" />
-			<p className="intro-presents">V Kostenko Presents</p>
-			<span className="intro-chevron">&gt;</span>
-			<svg
-				className="intro-x"
-				viewBox="0 0 1920 1080"
-				preserveAspectRatio="none"
-			>
-				<line x1="0" y1="0" x2="1920" y2="1080" pathLength={1} />
-				<line x1="1920" y1="0" x2="0" y2="1080" pathLength={1} />
+			{/* "Kostenko Presents" — the tail that slides away behind the V */}
+			<span className="intro-tail">
+				<span className="intro-tail-inner">Kostenko Presents</span>
+			</span>
+			{/* The V and the X are the SAME svg. The .intro-vee chevron is two
+			    short legs that rotate in place; on draw they extend into the X
+			    while the remaining legs draw in. Full X == Hub.scss geometry. */}
+			<svg className="intro-x" viewBox="0 0 1920 1080" preserveAspectRatio="none">
+				<g className="intro-vee">
+					<line x1="960.5" y1="558" x2="946" y2="524" pathLength={1} />
+					<line x1="959.5" y1="558" x2="973" y2="524" pathLength={1} />
+				</g>
+				<line className="leg leg-tl" x1="960" y1="540" x2="0" y2="0" pathLength={1} />
+				<line className="leg leg-bl" x1="960" y1="540" x2="0" y2="1080" pathLength={1} />
+				<line className="leg leg-tr" x1="960" y1="540" x2="1920" y2="0" pathLength={1} />
+				<line className="leg leg-br" x1="960" y1="540" x2="1920" y2="1080" pathLength={1} />
 			</svg>
 		</div>
 	);

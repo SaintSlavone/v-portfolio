@@ -1,8 +1,11 @@
 @use "../../styles/tokens" as *;
 
 // One-per-session intro (Figma "X Welcoming Page" + two transition frames):
-// "Presents" → ">" → grid + X draw-in → fade out to reveal the hub.
-// The X geometry matches Hub.scss exactly so the reveal is seamless.
+//   "V Kostenko Presents"  →  "Kostenko Presents" slides left behind the V
+//   →  V (the SVG chevron) rotates 90° into a ">"  →  the chevron extends
+//   into the X (all legs draw together)  →  fade out to reveal the hub.
+// The V and the X are the same SVG, so the whole morph is continuous — no
+// glyph-to-SVG handoff. Final X geometry matches Hub.scss for a seamless reveal.
 .intro {
 	position: fixed;
 	inset: 0;
@@ -19,23 +22,30 @@
 		@include grid-texture;
 	}
 
-	.intro-presents,
-	.intro-chevron {
-		@include text-intro;
+	// The V chevron sits at the viewport centre; the tail is laid out just to
+	// its right and slides left behind the V (the SVG paints over it)
+	// A fixed clipping window whose left edge sits at the V (viewport centre);
+	// the text slides within it and is clipped at that edge — hiding behind the V
+	.intro-tail {
 		position: absolute;
 		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-		opacity: 0;
-	}
+		left: 51%;
+		right: 0;
+		padding-left: 2.2vw;
+		overflow: hidden;
+		transform: translateY(-50%);
 
-	.intro-presents {
-		white-space: nowrap;
-		transition: opacity 0.45s ease;
-	}
-
-	.intro-chevron {
-		transition: opacity 0.35s ease;
+		.intro-tail-inner {
+			@include text-intro;
+			display: inline-block;
+			white-space: nowrap;
+			// backwards (not both): a forwards fill would pin opacity at 1 and
+			// override the slide-out fade below (animations beat transitions)
+			animation: intro-appear 0.5s ease backwards;
+			transition:
+				transform 0.7s ease,
+				opacity 0.4s ease 0.3s;
+		}
 	}
 
 	.intro-x {
@@ -46,32 +56,64 @@
 		pointer-events: none;
 
 		// pathLength=1 normalizes the dash math regardless of the stretched
-		// viewBox — offset 1 hides the stroke, 0 reveals it fully
-		line {
+		// viewBox — offset 1 hides a leg, 0 draws it fully from the centre out
+		.leg {
 			stroke: $color-fg;
 			stroke-width: 28;
 			stroke-dasharray: 1;
 			stroke-dashoffset: 1;
 			transition: stroke-dashoffset 0.7s ease;
 		}
+
+		// The V: two short legs meeting at centre, sized to sit on the text
+		// line. Rotates about the X's crossing point, then fades as the full
+		// legs take over. Lighter stroke keeps it text-weight, not X-weight.
+		.intro-vee {
+			transform-box: view-box;
+			transform-origin: 960px 540px;
+			animation: intro-appear 0.5s ease backwards;
+			transition:
+				transform 0.55s ease,
+				opacity 0.3s ease;
+
+			line {
+				stroke: $color-fg;
+				stroke-width: 4;
+			}
+		}
 	}
 
 	// --- phases -------------------------------------------------
-	&.intro-phase-presents .intro-presents {
-		opacity: 1;
+	// From the slide beat onward the tail slides left behind the V and fades
+	&.intro-phase-slide,
+	&.intro-phase-rotate,
+	&.intro-phase-draw,
+	&.intro-phase-out {
+		.intro-tail .intro-tail-inner {
+			transform: translateX(-20vw);
+			opacity: 0;
+		}
 	}
 
-	&.intro-phase-chevron .intro-chevron {
-		opacity: 1;
+	// V pivots 90° into a ">"
+	&.intro-phase-rotate .intro-vee {
+		transform: rotate(-90deg);
 	}
 
+	&.intro-phase-draw .intro-vee,
+	&.intro-phase-out .intro-vee {
+		transform: rotate(-90deg) scale(1.15);
+		opacity: 0;
+	}
+
+	// All four legs draw together
 	&.intro-phase-draw,
 	&.intro-phase-out {
 		.intro-grid {
 			opacity: 1;
 		}
 
-		.intro-x line {
+		.leg {
 			stroke-dashoffset: 0;
 		}
 	}
@@ -79,5 +121,11 @@
 	&.intro-phase-out {
 		opacity: 0;
 		pointer-events: none;
+	}
+}
+
+@keyframes intro-appear {
+	from {
+		opacity: 0;
 	}
 }
