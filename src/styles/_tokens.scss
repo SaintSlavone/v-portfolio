@@ -19,6 +19,15 @@ $font-heading: var(--font-montserrat), sans-serif;
 $font-body: var(--font-inter), sans-serif;
 
 // ---- Surfaces ------------------------------------------------
+// Just the square grid lines — shared by grid-surface and the intro overlay
+@mixin grid-texture {
+	background-image:
+		linear-gradient($color-grid 1px, transparent 1px),
+		linear-gradient(90deg, $color-grid 1px, transparent 1px);
+	background-size: 160px 160px;
+	background-position: center center;
+}
+
 // Full-viewport page surface with the square grid texture (see Figma background)
 @mixin grid-surface {
 	position: relative;
@@ -26,11 +35,7 @@ $font-body: var(--font-inter), sans-serif;
 	height: 100dvh;
 	overflow: hidden;
 	background-color: $color-bg;
-	background-image:
-		linear-gradient($color-grid 1px, transparent 1px),
-		linear-gradient(90deg, $color-grid 1px, transparent 1px);
-	background-size: 160px 160px;
-	background-position: center center;
+	@include grid-texture;
 }
 
 // ---- Type roles ---------------------------------------------
@@ -63,6 +68,16 @@ $font-body: var(--font-inter), sans-serif;
 	font-weight: 500;
 	letter-spacing: 0.15em;
 	text-transform: uppercase;
+	color: $color-fg;
+}
+
+// intro — welcoming "V Kostenko Presents" line (Figma display-2)
+@mixin text-intro {
+	font-family: $font-body;
+	font-size: 2.625rem; // 42px
+	font-weight: 400;
+	letter-spacing: 0.02em;
+	line-height: 1.2;
 	color: $color-fg;
 }
 
