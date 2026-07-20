@@ -1,0 +1,83 @@
+@use "../../styles/tokens" as *;
+
+// One-per-session intro (Figma "X Welcoming Page" + two transition frames):
+// "Presents" → ">" → grid + X draw-in → fade out to reveal the hub.
+// The X geometry matches Hub.scss exactly so the reveal is seamless.
+.intro {
+	position: fixed;
+	inset: 0;
+	z-index: 50;
+	overflow: hidden;
+	background-color: $color-bg;
+	transition: opacity 0.4s ease;
+
+	.intro-grid {
+		position: absolute;
+		inset: 0;
+		opacity: 0;
+		transition: opacity 0.4s ease;
+		@include grid-texture;
+	}
+
+	.intro-presents,
+	.intro-chevron {
+		@include text-intro;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		opacity: 0;
+	}
+
+	.intro-presents {
+		white-space: nowrap;
+		transition: opacity 0.45s ease;
+	}
+
+	.intro-chevron {
+		transition: opacity 0.35s ease;
+	}
+
+	.intro-x {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		pointer-events: none;
+
+		// pathLength=1 normalizes the dash math regardless of the stretched
+		// viewBox — offset 1 hides the stroke, 0 reveals it fully
+		line {
+			stroke: $color-fg;
+			stroke-width: 28;
+			stroke-dasharray: 1;
+			stroke-dashoffset: 1;
+			transition: stroke-dashoffset 0.7s ease;
+		}
+	}
+
+	// --- phases -------------------------------------------------
+	&.intro-phase-presents .intro-presents {
+		opacity: 1;
+	}
+
+	&.intro-phase-chevron .intro-chevron {
+		opacity: 1;
+	}
+
+	&.intro-phase-draw,
+	&.intro-phase-out {
+		.intro-grid {
+			opacity: 1;
+		}
+
+		.intro-x line {
+			stroke-dashoffset: 0;
+		}
+	}
+
+	&.intro-phase-out {
+		opacity: 0;
+		pointer-events: none;
+	}
+}
