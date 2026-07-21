@@ -98,92 +98,105 @@ export default function ProjectGallery({ project, onClose }: ProjectGalleryProps
 	useEffect(() => {
 		const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-		const dataSource: GallerySlideData[] = [
-			{ type: "video", videoSrc: project.video },
-			...project.gallery.map((src): GallerySlideData => ({
-				src,
-				alt: `${project.name} screenshot`,
-			})),
-			{ type: "info" },
-		];
-
-		const pswp = new PhotoSwipe({
-			dataSource,
-			index: 0,
-			bgOpacity: 0.8,
-			loop: false, // no wrap-around; end arrows disable (hidden via CSS)
-			counter: false,
-			zoom: false, // no zoom button — scroll / double-tap still zoom images
-			escKey: false, // handled below so ESC never reaches XField's listener
-			clickToCloseNonZoomable: false, // clicking the video / info won't close
-			mainClass: "project-gallery-pswp",
-			closeSVG: CLOSE_SVG,
-			arrowPrevSVG: ARROW_PREV_SVG,
-			arrowNextSVG: ARROW_NEXT_SVG,
-			showHideAnimationType: "fade",
-			appendToEl: document.body,
-		});
-
-		// Swap in the custom (non-image) slides. Their content element is left
-		// unsized, so PhotoSwipe stretches it to the full viewport for us.
-		pswp.on("contentLoad", (event) => {
-			const { content } = event;
-			const data = content.data as GallerySlideData;
-			if (data.type === "video") {
-				event.preventDefault();
-				const wrap = document.createElement("div");
-				wrap.className = "gallery-custom-slide";
-				const video = document.createElement("video");
-				video.className = "slide-video";
-				video.src = data.videoSrc ?? "";
-				video.muted = true;
-				video.loop = true;
-				video.playsInline = true;
-				video.controls = reduceMotion; // give a manual play affordance
-				wrap.appendChild(video);
-				content.element = wrap;
-			} else if (data.type === "info") {
-				event.preventDefault();
-				content.element = createInfoSlide(project);
-			}
-		});
-
-		// Only the visible video plays; reset it once its slide leaves view
-		pswp.on("contentActivate", ({ content }) => {
-			const video = content.element?.querySelector<HTMLVideoElement>(".slide-video");
-			if (video && !reduceMotion) video.play().catch(() => {});
-		});
-		pswp.on("contentDeactivate", ({ content }) => {
-			const video = content.element?.querySelector<HTMLVideoElement>(".slide-video");
-			if (video) {
-				video.pause();
-				video.currentTime = 0;
-			}
-		});
+		let pswp: PhotoSwipe | null = null;
+		// StrictMode mounts → unmounts → mounts effects in dev; deferring init a
+		// frame lets that settle so we never build two stacked instances
+		let cancelled = false;
 
 		// Capture phase + stopPropagation: the gallery swallows ESC before the
 		// XField return-to-hub listener (bubble phase, window) can see it.
 		const handleEscape = (event: KeyboardEvent) => {
 			if (event.key === "Escape") {
 				event.stopPropagation();
-				pswp.close();
+				pswp?.close();
 			}
 		};
-		window.addEventListener("keydown", handleEscape, true);
 
-		// PhotoSwipe self-closes (✕ / swipe-down / backdrop) → tell the parent.
-		// The flag stops the cleanup below from destroying an instance twice.
-		let destroyed = false;
-		pswp.on("destroy", () => {
-			destroyed = true;
-			onCloseRef.current();
+		// Fired on every close path (✕ / ESC / backdrop / swipe-down) and by our
+		// own cleanup. Only tell the parent when the user closed it — during an
+		// unmount (cancelled) the parent is already tearing this component down.
+		const handleDestroy = () => {
+			pswp = null;
+			if (!cancelled) onCloseRef.current();
+		};
+
+		const raf = requestAnimationFrame(() => {
+			if (cancelled) return;
+
+			const dataSource: GallerySlideData[] = [
+				{ type: "video", videoSrc: project.video },
+				...project.gallery.map((src): GallerySlideData => ({
+					src,
+					alt: `${project.name} screenshot`,
+				})),
+				{ type: "info" },
+			];
+
+			pswp = new PhotoSwipe({
+				dataSource,
+				index: 0,
+				bgOpacity: 0.8,
+				loop: false, // no wrap-around; end arrows disable (hidden via CSS)
+				counter: false,
+				zoom: false, // no zoom button — scroll / double-tap still zoom images
+				escKey: false, // handled below so ESC never reaches XField's listener
+				mainClass: "project-gallery-pswp",
+				closeSVG: CLOSE_SVG,
+				arrowPrevSVG: ARROW_PREV_SVG,
+				arrowNextSVG: ARROW_NEXT_SVG,
+				showHideAnimationType: "fade",
+				appendToEl: document.body,
+			});
+
+			// Swap in the custom (non-image) slides. Their content element is left
+			// unsized, so PhotoSwipe stretches it to the full viewport for us.
+			pswp.on("contentLoad", (event) => {
+				const { content } = event;
+				const data = content.data as GallerySlideData;
+				if (data.type === "video") {
+					event.preventDefault();
+					const wrap = document.createElement("div");
+					wrap.className = "gallery-custom-slide";
+					const video = document.createElement("video");
+					video.className = "slide-video";
+					video.src = data.videoSrc ?? "";
+					video.muted = true;
+					video.loop = true;
+					video.playsInline = true;
+					video.controls = reduceMotion; // give a manual play affordance
+					wrap.appendChild(video);
+					content.element = wrap;
+				} else if (data.type === "info") {
+					event.preventDefault();
+					content.element = createInfoSlide(project);
+				}
+			});
+
+			// Only the visible video plays; reset it once its slide leaves view
+			pswp.on("contentActivate", ({ content }) => {
+				const video = content.element?.querySelector<HTMLVideoElement>(".slide-video");
+				if (video && !reduceMotion) video.play().catch(() => {});
+			});
+			pswp.on("contentDeactivate", ({ content }) => {
+				const video = content.element?.querySelector<HTMLVideoElement>(".slide-video");
+				if (video) {
+					video.pause();
+					video.currentTime = 0;
+				}
+			});
+
+			pswp.on("destroy", handleDestroy);
+			window.addEventListener("keydown", handleEscape, true);
+			pswp.init();
 		});
 
-		pswp.init();
-
 		return () => {
+			cancelled = true;
+			cancelAnimationFrame(raf);
 			window.removeEventListener("keydown", handleEscape, true);
-			if (!destroyed) pswp.destroy();
+			// destroy() re-enters handleDestroy, which nulls pswp; cancelled keeps
+			// it from bouncing onClose back at an already-unmounting parent
+			pswp?.destroy();
 		};
 		// project is a stable JSON import, so this effect runs once per open
 	}, [project]);

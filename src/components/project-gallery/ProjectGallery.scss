@@ -39,12 +39,21 @@
 		pointer-events: none;
 	}
 
+	// We supply a proper right-pointing "next" chevron, so undo PhotoSwipe's
+	// default horizontal flip (it assumes both arrows reuse the "prev" icon)
+	.pswp__button--arrow--next .pswp__icn {
+		transform: none;
+	}
+
 	// Video / info slides: PhotoSwipe sizes the wrapper to the viewport, we
-	// just center the framed content inside it
+	// just center the framed content inside it. The wrapper itself is
+	// click-through so the empty margin acts as a closable backdrop, while the
+	// framed content stays interactive (video controls, info links).
 	.gallery-custom-slide {
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		pointer-events: none;
 	}
 
 	.slide-video {
@@ -52,6 +61,7 @@
 		height: 82vh;
 		object-fit: cover;
 		background-color: $color-card-idle;
+		pointer-events: auto;
 	}
 
 	.gallery-info {
@@ -65,6 +75,7 @@
 		background-color: $color-bg;
 		border: 1px solid $color-line;
 		padding: 24px;
+		pointer-events: auto;
 
 		.info-label {
 			@include text-caption;
