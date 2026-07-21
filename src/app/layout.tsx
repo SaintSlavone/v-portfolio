@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Montserrat } from "next/font/google";
 import "./Main.scss";
+import XField from "@/components/x-field/XField";
 
 const montserrat = Montserrat({
 	subsets: ["latin"],
@@ -26,7 +27,10 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en">
-			<body className={`${montserrat.variable} ${inter.variable}`}>{children}</body>
+			<body className={`${montserrat.variable} ${inter.variable}`}>
+				<XField />
+				{children}
+			</body>
 		</html>
 	);
 }

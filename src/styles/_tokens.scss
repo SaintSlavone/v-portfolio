@@ -28,14 +28,13 @@ $font-body: var(--font-inter), sans-serif;
 	background-position: center center;
 }
 
-// Full-viewport page surface with the square grid texture (see Figma background)
+// Full-viewport page surface. The grid texture is painted once by the
+// persistent .grid-backdrop (root layout), so pages stay transparent over it.
 @mixin grid-surface {
 	position: relative;
 	width: 100vw;
 	height: 100dvh;
 	overflow: hidden;
-	background-color: $color-bg;
-	@include grid-texture;
 }
 
 // ---- Type roles ---------------------------------------------

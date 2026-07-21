@@ -1,7 +1,6 @@
 import "./Projects.scss";
 import "./Adaptations.scss";
 import projects from "@/data/projects.json";
-import XCorners from "@/components/x-corners/XCorners";
 import ProjectCard from "@/components/project-card/ProjectCard";
 
 // Fixed 6-slot layout from Figma "X Projects Page" — 3 cards / 1 full-width /
@@ -12,7 +11,6 @@ export default function ProjectsPage() {
 
 	return (
 		<main className="projects">
-			<XCorners position="left" />
 			<h1 className="projects-title">Projects</h1>
 			<div className="projects-grid">
 				{rows.map((row, index) => (

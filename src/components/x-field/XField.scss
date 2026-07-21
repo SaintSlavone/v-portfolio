@@ -1,0 +1,162 @@
+@use "../../styles/tokens" as *;
+
+// Exit slide, keyed by the route's hub quadrant. Defined once as the --exit
+// custom property so the grid and the X consume the identical value and move
+// together. Absolute units (vw/dvh) so the same distance applies to both the
+// oversized grid and the viewport-sized X. NOTE: amounts are first-pass values.
+@mixin x-exit-transform {
+	&.exit-top {
+		--exit: translateY(80dvh);
+	}
+
+	&.exit-bottom {
+		--exit: translateY(-80dvh);
+	}
+
+	&.exit-left {
+		--exit: translateX(80vw);
+	}
+
+	&.exit-right {
+		--exit: translateX(-80vw);
+	}
+}
+
+// Persistent grid + background behind every route. Carries the same --exit
+// transform as the X so the two slide together. Oversized well past the
+// viewport so it still covers the screen after sliding (no black gap).
+.grid-backdrop {
+	position: fixed;
+	inset: -150%;
+	z-index: 0;
+	pointer-events: none;
+	background-color: $color-bg;
+	@include grid-texture;
+	transform: var(--exit, none);
+	transition: transform 0.6s ease;
+	@include x-exit-transform;
+}
+
+// The persistent X frame. Sits above page content (pointer-events pass through
+// except the return zone / wordmark) and below the intro (z 50) and gallery
+// (z 20). On navigation only the state class changes; the transform tweens.
+.x-field {
+	position: fixed;
+	inset: 0;
+	z-index: 8;
+	pointer-events: none;
+	@include x-exit-transform;
+
+	.x-field-x {
+		position: absolute;
+		inset: 0;
+		z-index: 2;
+		width: 100%;
+		height: 100%;
+		// Let the extended legs render past the viewBox instead of clipping
+		// their ends at the SVG box edge once it's translated
+		overflow: visible;
+		transform: var(--exit, none);
+		transition: transform 0.6s ease;
+
+		line {
+			stroke: $color-fg;
+			stroke-width: 28;
+		}
+	}
+
+	// Return-to-hub zone over the visible arms. Hover reveals a gradient (as in
+	// the old XCorners); the clip-path also bounds the clickable area.
+	.x-field-return {
+		position: absolute;
+		z-index: 1;
+		display: block;
+		pointer-events: auto;
+
+		&::before {
+			content: "";
+			position: absolute;
+			inset: 0;
+			background: linear-gradient(
+				var(--zone-direction),
+				transparent,
+				rgba(255, 255, 255, 0.16)
+			);
+			opacity: 0;
+			transition: opacity 0.4s ease;
+		}
+
+		&:hover::before,
+		&:focus-visible::before {
+			opacity: 1;
+		}
+
+		&:focus-visible {
+			outline: none;
+		}
+	}
+
+	// Arm inner edges hit the screen edge at 18.75% / 81.25% (top/bottom) and
+	// 21% / 79% (sides) — same trapezoids the old XCorners zones used.
+	&.arms-bottom .x-field-return {
+		left: 0;
+		bottom: 0;
+		width: 100vw;
+		height: 24vh;
+		--zone-direction: to bottom;
+		clip-path: polygon(-5% 0, 105% 0, 81.25% 100%, 18.75% 100%);
+	}
+
+	&.arms-top .x-field-return {
+		left: 0;
+		top: 0;
+		width: 100vw;
+		height: 24vh;
+		--zone-direction: to top;
+		clip-path: polygon(18.75% 0, 81.25% 0, 105% 100%, -5% 100%);
+	}
+
+	&.arms-left .x-field-return {
+		left: 0;
+		top: 0;
+		width: 21vw;
+		height: 100vh;
+		--zone-direction: to left;
+		clip-path: polygon(0 21%, 100% 0, 100% 100%, 0 79%);
+	}
+
+	&.arms-right .x-field-return {
+		right: 0;
+		top: 0;
+		width: 21vw;
+		height: 100vh;
+		--zone-direction: to right;
+		clip-path: polygon(0 0, 100% 21%, 100% 79%, 0 100%);
+	}
+
+	// Mobile fallback back-link (shown via Adaptations)
+	.x-field-wordmark {
+		display: none;
+		position: absolute;
+		top: 24px;
+		left: 24px;
+		z-index: 3;
+		pointer-events: auto;
+		font-family: $font-heading;
+		font-size: 18px;
+		font-weight: 600;
+		letter-spacing: 0.15em;
+		color: $color-fg;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.grid-backdrop,
+	.x-field .x-field-x {
+		transition: none;
+	}
+
+	.x-field .x-field-return::before {
+		transition: none;
+	}
+}

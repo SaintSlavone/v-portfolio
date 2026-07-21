@@ -18,15 +18,8 @@ const sections: HubSection[] = [
 export default function Hub() {
 	return (
 		<main className="hub">
-			<svg
-				className="hub-x"
-				viewBox="0 0 1920 1080"
-				preserveAspectRatio="none"
-				aria-hidden="true"
-			>
-				<line x1="0" y1="0" x2="1920" y2="1080" />
-				<line x1="1920" y1="0" x2="0" y2="1080" />
-			</svg>
+			{/* The X itself lives in the persistent <XField> (root layout);
+			    the hub only overlays the quadrant nav on top of it */}
 			<span className="hub-wordmark">V K</span>
 			<nav className="hub-nav" aria-label="Main navigation">
 				{sections.map(({ href, label, position }) => (

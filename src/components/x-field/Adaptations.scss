@@ -1,0 +1,22 @@
+@use "../../styles/tokens" as *;
+
+// The moving X and its return zone are too subtle for touch — on mobile
+// portrait the X hides (the hub uses stacked dividers there) and the wordmark
+// becomes the back-to-home affordance on interior pages.
+@media screen and (max-width: 600px) and (max-height: 1000px) and (orientation: portrait) {
+	// The X is hidden on mobile, so the grid shouldn't slide either
+	.grid-backdrop {
+		transform: none;
+	}
+
+	.x-field {
+		.x-field-x,
+		.x-field-return {
+			display: none;
+		}
+
+		.x-field-wordmark {
+			display: block;
+		}
+	}
+}

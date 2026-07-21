@@ -1,7 +1,6 @@
 import "./Skills.scss";
 import "./Adaptations.scss";
 import skills from "@/data/skills.json";
-import XCorners from "@/components/x-corners/XCorners";
 import SkillsGraph from "@/components/skills-graph/SkillsGraph";
 
 interface SkillTreeNode {
@@ -40,7 +39,6 @@ function SkillsList({ branches }: { branches: SkillTreeNode[] }) {
 export default function SkillsPage() {
 	return (
 		<main className="skills">
-			<XCorners position="right" />
 			<h1 className="skills-title">Skills</h1>
 			<SkillsGraph />
 			<SkillsList branches={skills.children} />

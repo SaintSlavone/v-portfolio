@@ -1,13 +1,11 @@
 import "./Contacts.scss";
 import "./Adaptations.scss";
 import contacts from "@/data/contacts.json";
-import XCorners from "@/components/x-corners/XCorners";
 import ContactForm from "@/components/contact-form/ContactForm";
 
 export default function ContactsPage() {
 	return (
 		<main className="contacts">
-			<XCorners position="top" />
 			<h1 className="contacts-title">Contacts</h1>
 			<ul className="contacts-list">
 				<li className="contacts-row">
