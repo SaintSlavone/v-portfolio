@@ -83,34 +83,28 @@ function createInfoSlide(project: Project): HTMLDivElement {
 	return wrap;
 }
 
-// PhotoSwipe needs each image's real size up front (it never reads naturalWidth
-// off the loaded <img>) — without it, images render un-fitted and non-zoomable.
-// Reading it off a detached Image() also warms the browser cache for the slide.
+// Longest edge (px) we normalize every screenshot to. Small shots (e.g.
+// Ellington's ~860px) get their *declared* size inflated to this baseline so
+// PhotoSwipe fits them down to fill the frame instead of showing them tiny.
+// Crucially this keeps the resting zoom at "fit" (≤1×): above it PhotoSwipe's
+// isPannable() turns a horizontal mouse-drag into a pan instead of a slide.
+const NORMALIZED_LONG_EDGE = 2560;
+
+// PhotoSwipe needs each image's real aspect ratio up front (it never reads
+// naturalWidth off the loaded <img>) — without it, images render un-fitted and
+// non-zoomable. Reading it off a detached Image() also warms the browser cache.
+// Dimensions come back normalized to NORMALIZED_LONG_EDGE (never scaled down).
 function loadImageSize(src: string): Promise<{ width: number; height: number }> {
 	return new Promise((resolve) => {
+		const normalize = (width: number, height: number) => {
+			const scale = Math.max(1, NORMALIZED_LONG_EDGE / Math.max(width, height));
+			return { width: Math.round(width * scale), height: Math.round(height * scale) };
+		};
 		const img = new window.Image();
-		img.onload = () => resolve({ width: img.naturalWidth, height: img.naturalHeight });
+		img.onload = () => resolve(normalize(img.naturalWidth, img.naturalHeight));
 		img.onerror = () => resolve({ width: 1600, height: 1000 }); // 16:10 fallback
 		img.src = src;
 	});
-}
-
-// Subset of PhotoSwipe's ZoomLevel passed to a zoom-level option function
-interface ZoomLevelLike {
-	panAreaSize: { x: number; y: number } | null;
-	elementSize: { x: number; y: number } | null;
-}
-
-// Uncapped "contain" ratio. PhotoSwipe's built-in "fit" caps at 1× so small
-// screenshots (e.g. Ellington's ~860px shots) would sit tiny and non-zoomable
-// in the middle — a click then closes instead of zooming. This scales them UP
-// to fill the frame while keeping the whole image visible (and zoomable).
-function containZoom(zoom: ZoomLevelLike): number {
-	if (!zoom.panAreaSize || !zoom.elementSize) return 1;
-	return Math.min(
-		zoom.panAreaSize.x / zoom.elementSize.x,
-		zoom.panAreaSize.y / zoom.elementSize.y,
-	);
 }
 
 // PhotoSwipe-powered gallery. Slide order follows Figma "X Iframe Window
@@ -175,11 +169,6 @@ export default function ProjectGallery({ project, onClose }: ProjectGalleryProps
 				zoom: false, // no zoom button — scroll / double-tap still zoom images
 				escKey: false, // handled below so ESC never reaches XField's listener
 				clickToCloseNonZoomable: false, // clicking the video / info won't close
-				// Fill the frame regardless of source size; keep every image
-				// zoomable so a click zooms rather than closing the gallery
-				initialZoomLevel: containZoom,
-				secondaryZoomLevel: (zoom) => containZoom(zoom) * 2,
-				maxZoomLevel: (zoom) => containZoom(zoom) * 3,
 				mainClass: "project-gallery-pswp",
 				closeSVG: CLOSE_SVG,
 				arrowPrevSVG: ARROW_PREV_SVG,
