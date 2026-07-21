@@ -6,7 +6,8 @@
 .project-gallery {
 	position: fixed;
 	inset: 0;
-	z-index: 20;
+	// Above the persistent X frame (.x-field, z 8) so the overlay covers it
+	z-index: 30;
 	display: flex;
 	align-items: center;
 	justify-content: center;

@@ -4,6 +4,7 @@ import "./ProjectGallery.scss";
 import "./Adaptations.scss";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 export interface Project {
 	id: string;
@@ -27,17 +28,12 @@ interface ProjectGalleryProps {
 }
 
 type Slide =
-	| { type: "video"; src: string }
-	| { type: "image"; src: string }
-	| { type: "info" };
+	{ type: "video"; src: string } | { type: "image"; src: string } | { type: "info" };
 
 // Iframe gallery overlay per Figma "X Iframe Window Page": slide order is
 // video first, then images; the LAST slide is the project info card.
 // Close via ✕ or ESC; chevrons hide at the ends (no wrap-around).
-export default function ProjectGallery({
-	project,
-	onClose,
-}: ProjectGalleryProps) {
+export default function ProjectGallery({ project, onClose }: ProjectGalleryProps) {
 	const [index, setIndex] = useState(0);
 	const closeRef = useRef<HTMLButtonElement>(null);
 
@@ -50,15 +46,13 @@ export default function ProjectGallery({
 	const lastIndex = slides.length - 1;
 
 	// Only mounted client-side (after a card click), so matchMedia is safe
-	const reduceMotion = window.matchMedia(
-		"(prefers-reduced-motion: reduce)",
-	).matches;
+	const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 	useEffect(() => {
 		const handleKeyDown = (event: KeyboardEvent) => {
 			if (event.key === "Escape") {
 				// Capture phase + stopPropagation: the overlay swallows ESC
-				// before the XCorners return-to-hub listener sees it
+				// before the XField return-to-hub listener sees it
 				event.stopPropagation();
 				onClose();
 			}
@@ -83,7 +77,9 @@ export default function ProjectGallery({
 		};
 	}, []);
 
-	return (
+	// Portal to <body> so the overlay escapes the projects page stacking
+	// context (.projects-grid) and can layer above the persistent X frame
+	return createPortal(
 		<div
 			className="project-gallery"
 			role="dialog"
@@ -185,6 +181,7 @@ export default function ProjectGallery({
 					</svg>
 				</button>
 			)}
-		</div>
+		</div>,
+		document.body,
 	);
 }
