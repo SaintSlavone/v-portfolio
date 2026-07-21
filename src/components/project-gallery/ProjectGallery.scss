@@ -1,36 +1,57 @@
 @use "../../styles/tokens" as *;
 
-// Overlay geometry maps to Figma "X Iframe Window Page" (1920×1080):
-// window ~1688×850 centered, ✕ top-right, chevrons at the viewport
-// edges vertically centered. Info slide — see "Last Slide" frame.
-.project-gallery {
-	position: fixed;
-	inset: 0;
-	// Above the persistent X frame (.x-field, z 8) so the overlay covers it
-	z-index: 30;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	background: rgba(0, 0, 0, 0.8);
-	animation: gallery-fade-in 0.3s ease;
+// Scoped overrides for the PhotoSwipe instance (mainClass "project-gallery-pswp",
+// applied to its .pswp root). Everything nests under the single root class, so
+// these win over photoswipe/style.css without leaking to other lightboxes.
+// Geometry maps to Figma "X Iframe Window Page": ✕ top-right, chevrons at the
+// viewport edges, and a windowed video / info card centered on the backdrop.
+.project-gallery-pswp {
+	// Backdrop is pure black; opacity comes from the bgOpacity option
+	.pswp__bg {
+		background: #000000;
+	}
 
-	.gallery-window {
-		position: relative;
+	// Thin-stroke controls to match the persistent X (x-field)
+	.pswp__icn {
+		fill: none;
+		stroke: #ffffff;
+		stroke-width: 2.5;
+
+		line,
+		polyline {
+			fill: none;
+		}
+	}
+
+	.pswp__button {
+		transition: opacity 0.3s ease;
+
+		&:hover,
+		&:focus-visible {
+			opacity: 0.6;
+		}
+	}
+
+	// End arrows disappear on the first / last slide (no wrap-around), mirroring
+	// the original overlay where the chevrons hid at the ends
+	.pswp__button--arrow:disabled {
+		opacity: 0;
+		pointer-events: none;
+	}
+
+	// Video / info slides: PhotoSwipe sizes the wrapper to the viewport, we
+	// just center the framed content inside it
+	.gallery-custom-slide {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.slide-video {
 		width: 88vw;
-		height: 79vh;
-		overflow: hidden;
+		height: 82vh;
+		object-fit: cover;
 		background-color: $color-card-idle;
-
-		.slide-video {
-			display: block;
-			width: 100%;
-			height: 100%;
-			object-fit: cover;
-		}
-
-		.slide-image {
-			object-fit: cover;
-		}
 	}
 
 	.gallery-info {
@@ -38,8 +59,8 @@
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-		width: 100%;
-		height: 100%;
+		width: min(88vw, 1400px);
+		height: 82vh;
 		text-align: center;
 		background-color: $color-bg;
 		border: 1px solid $color-line;
@@ -90,63 +111,5 @@
 				}
 			}
 		}
-	}
-
-	.gallery-close,
-	.gallery-prev,
-	.gallery-next {
-		position: absolute;
-		padding: 8px;
-		border: none;
-		background: none;
-		cursor: pointer;
-		transition: opacity 0.3s ease;
-
-		svg {
-			display: block;
-			fill: none;
-			stroke: $color-fg;
-			stroke-width: 2.5;
-		}
-
-		&:hover,
-		&:focus-visible {
-			opacity: 0.6;
-		}
-	}
-
-	.gallery-close {
-		top: 2.5vh;
-		right: 1.5vw;
-
-		svg {
-			width: 38px;
-			height: 38px;
-		}
-	}
-
-	.gallery-prev,
-	.gallery-next {
-		top: 50%;
-		transform: translateY(-50%);
-
-		svg {
-			width: 26px;
-			height: 52px;
-		}
-	}
-
-	.gallery-prev {
-		left: 1.2vw;
-	}
-
-	.gallery-next {
-		right: 1.2vw;
-	}
-}
-
-@keyframes gallery-fade-in {
-	from {
-		opacity: 0;
 	}
 }

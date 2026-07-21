@@ -1,10 +1,10 @@
 "use client";
 
+import "photoswipe/style.css";
 import "./ProjectGallery.scss";
 import "./Adaptations.scss";
-import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
+import { useEffect, useRef } from "react";
+import PhotoSwipe, { SlideData } from "photoswipe";
 
 export interface Project {
 	id: string;
@@ -27,161 +27,166 @@ interface ProjectGalleryProps {
 	onClose: () => void;
 }
 
-type Slide =
-	{ type: "video"; src: string } | { type: "image"; src: string } | { type: "info" };
+// Custom payloads ride along in PhotoSwipe's SlideData (which is a loose
+// Record) so contentLoad can tell a video / info slide from an image one.
+interface GallerySlideData extends SlideData {
+	type?: "video" | "info";
+	videoSrc?: string;
+}
 
-// Iframe gallery overlay per Figma "X Iframe Window Page": slide order is
-// video first, then images; the LAST slide is the project info card.
-// Close via ✕ or ESC; chevrons hide at the ends (no wrap-around).
+// Thin-stroke icons matching the persistent X (see x-field) — PhotoSwipe
+// injects each as the button's inner markup, keyed by the *SVG options below.
+const CLOSE_SVG = `<svg class="pswp__icn" viewBox="0 0 40 40" aria-hidden="true"><line x1="7" y1="7" x2="33" y2="33"/><line x1="33" y1="7" x2="7" y2="33"/></svg>`;
+const ARROW_PREV_SVG = `<svg class="pswp__icn" viewBox="0 0 24 48" aria-hidden="true"><polyline points="20 5 5 24 20 43"/></svg>`;
+const ARROW_NEXT_SVG = `<svg class="pswp__icn" viewBox="0 0 24 48" aria-hidden="true"><polyline points="4 5 19 24 4 43"/></svg>`;
+
+// Builds the final "project info" slide as detached DOM (PhotoSwipe owns the
+// lifecycle, so this can't be JSX). Mirrors the old overlay's info card.
+function createInfoSlide(project: Project): HTMLDivElement {
+	const wrap = document.createElement("div");
+	wrap.className = "gallery-custom-slide";
+
+	const info = document.createElement("div");
+	info.className = "gallery-info";
+	info.innerHTML = `
+		<p class="info-label">Project</p>
+		<h2 class="info-name"></h2>
+		<p class="info-meta"></p>
+		<p class="info-stack"></p>
+		<hr class="info-divider" />
+		<div class="info-links"></div>
+	`;
+
+	// textContent (not innerHTML) so project copy can never inject markup
+	info.querySelector(".info-name")!.textContent = project.name;
+	info.querySelector(".info-meta")!.textContent = [
+		project.role,
+		project.years,
+		project.duration,
+	].join(" · ");
+	info.querySelector(".info-stack")!.textContent = project.stack.join(" · ");
+
+	const links = info.querySelector(".info-links")!;
+	const addLink = (href: string, label: string) => {
+		const anchor = document.createElement("a");
+		anchor.className = "info-link";
+		anchor.href = href;
+		anchor.target = "_blank";
+		anchor.rel = "noreferrer";
+		anchor.textContent = label;
+		links.appendChild(anchor);
+	};
+	if (project.links.live) addLink(project.links.live, "Visit live ↗");
+	if (project.links.github) addLink(project.links.github, "GitHub ↗");
+
+	wrap.appendChild(info);
+	return wrap;
+}
+
+// PhotoSwipe-powered gallery. Slide order follows Figma "X Iframe Window
+// Page": preview video first, then screenshots, then the info card last.
+// This component renders nothing itself — it just drives a PhotoSwipe
+// instance mounted on <body>, which layers above the persistent X frame.
 export default function ProjectGallery({ project, onClose }: ProjectGalleryProps) {
-	const [index, setIndex] = useState(0);
-	const closeRef = useRef<HTMLButtonElement>(null);
-
-	const slides: Slide[] = [
-		{ type: "video", src: project.video },
-		...project.gallery.map((src): Slide => ({ type: "image", src })),
-		{ type: "info" },
-	];
-	const slide = slides[index];
-	const lastIndex = slides.length - 1;
-
-	// Only mounted client-side (after a card click), so matchMedia is safe
-	const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+	// Keep the latest onClose reachable without re-running the effect (which
+	// would tear down and rebuild the whole gallery on a parent re-render)
+	const onCloseRef = useRef(onClose);
+	useEffect(() => {
+		onCloseRef.current = onClose;
+	});
 
 	useEffect(() => {
-		const handleKeyDown = (event: KeyboardEvent) => {
+		const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+		const dataSource: GallerySlideData[] = [
+			{ type: "video", videoSrc: project.video },
+			...project.gallery.map((src): GallerySlideData => ({
+				src,
+				alt: `${project.name} screenshot`,
+			})),
+			{ type: "info" },
+		];
+
+		const pswp = new PhotoSwipe({
+			dataSource,
+			index: 0,
+			bgOpacity: 0.8,
+			loop: false, // no wrap-around; end arrows disable (hidden via CSS)
+			counter: false,
+			zoom: false, // no zoom button — scroll / double-tap still zoom images
+			escKey: false, // handled below so ESC never reaches XField's listener
+			clickToCloseNonZoomable: false, // clicking the video / info won't close
+			mainClass: "project-gallery-pswp",
+			closeSVG: CLOSE_SVG,
+			arrowPrevSVG: ARROW_PREV_SVG,
+			arrowNextSVG: ARROW_NEXT_SVG,
+			showHideAnimationType: "fade",
+			appendToEl: document.body,
+		});
+
+		// Swap in the custom (non-image) slides. Their content element is left
+		// unsized, so PhotoSwipe stretches it to the full viewport for us.
+		pswp.on("contentLoad", (event) => {
+			const { content } = event;
+			const data = content.data as GallerySlideData;
+			if (data.type === "video") {
+				event.preventDefault();
+				const wrap = document.createElement("div");
+				wrap.className = "gallery-custom-slide";
+				const video = document.createElement("video");
+				video.className = "slide-video";
+				video.src = data.videoSrc ?? "";
+				video.muted = true;
+				video.loop = true;
+				video.playsInline = true;
+				video.controls = reduceMotion; // give a manual play affordance
+				wrap.appendChild(video);
+				content.element = wrap;
+			} else if (data.type === "info") {
+				event.preventDefault();
+				content.element = createInfoSlide(project);
+			}
+		});
+
+		// Only the visible video plays; reset it once its slide leaves view
+		pswp.on("contentActivate", ({ content }) => {
+			const video = content.element?.querySelector<HTMLVideoElement>(".slide-video");
+			if (video && !reduceMotion) video.play().catch(() => {});
+		});
+		pswp.on("contentDeactivate", ({ content }) => {
+			const video = content.element?.querySelector<HTMLVideoElement>(".slide-video");
+			if (video) {
+				video.pause();
+				video.currentTime = 0;
+			}
+		});
+
+		// Capture phase + stopPropagation: the gallery swallows ESC before the
+		// XField return-to-hub listener (bubble phase, window) can see it.
+		const handleEscape = (event: KeyboardEvent) => {
 			if (event.key === "Escape") {
-				// Capture phase + stopPropagation: the overlay swallows ESC
-				// before the XField return-to-hub listener sees it
 				event.stopPropagation();
-				onClose();
-			}
-			if (event.key === "ArrowRight") {
-				setIndex((current) => Math.min(current + 1, lastIndex));
-			}
-			if (event.key === "ArrowLeft") {
-				setIndex((current) => Math.max(current - 1, 0));
+				pswp.close();
 			}
 		};
-		window.addEventListener("keydown", handleKeyDown, true);
-		return () => window.removeEventListener("keydown", handleKeyDown, true);
-	}, [onClose, lastIndex]);
+		window.addEventListener("keydown", handleEscape, true);
 
-	// Lock page scroll behind the overlay while it is open
-	useEffect(() => {
-		const previous = document.body.style.overflow;
-		document.body.style.overflow = "hidden";
-		closeRef.current?.focus();
+		// PhotoSwipe self-closes (✕ / swipe-down / backdrop) → tell the parent.
+		// The flag stops the cleanup below from destroying an instance twice.
+		let destroyed = false;
+		pswp.on("destroy", () => {
+			destroyed = true;
+			onCloseRef.current();
+		});
+
+		pswp.init();
+
 		return () => {
-			document.body.style.overflow = previous;
+			window.removeEventListener("keydown", handleEscape, true);
+			if (!destroyed) pswp.destroy();
 		};
-	}, []);
+		// project is a stable JSON import, so this effect runs once per open
+	}, [project]);
 
-	// Portal to <body> so the overlay escapes the projects page stacking
-	// context (.projects-grid) and can layer above the persistent X frame
-	return createPortal(
-		<div
-			className="project-gallery"
-			role="dialog"
-			aria-modal="true"
-			aria-label={`${project.name} gallery`}
-			onClick={(event) => {
-				// Backdrop only — ignore clicks bubbling from the window/controls
-				if (event.target === event.currentTarget) onClose();
-			}}
-		>
-			<div className="gallery-window">
-				{slide.type === "video" && (
-					<video
-						className="slide-video"
-						src={slide.src}
-						autoPlay={!reduceMotion}
-						controls={reduceMotion}
-						muted
-						loop
-						playsInline
-					/>
-				)}
-				{slide.type === "image" && (
-					<Image
-						className="slide-image"
-						src={slide.src}
-						alt={`${project.name} screenshot ${index + 1}`}
-						fill
-						sizes="88vw"
-					/>
-				)}
-				{slide.type === "info" && (
-					<div className="gallery-info">
-						<p className="info-label">Project</p>
-						<h2 className="info-name">{project.name}</h2>
-						<p className="info-meta">
-							{[project.role, project.years, project.duration].join(" · ")}
-						</p>
-						<p className="info-stack">{project.stack.join(" · ")}</p>
-						<hr className="info-divider" />
-						<div className="info-links">
-							{project.links.live && (
-								<a
-									className="info-link"
-									href={project.links.live}
-									target="_blank"
-									rel="noreferrer"
-								>
-									Visit live ↗
-								</a>
-							)}
-							{project.links.github && (
-								<a
-									className="info-link"
-									href={project.links.github}
-									target="_blank"
-									rel="noreferrer"
-								>
-									GitHub ↗
-								</a>
-							)}
-						</div>
-					</div>
-				)}
-			</div>
-			<button
-				ref={closeRef}
-				type="button"
-				className="gallery-close"
-				aria-label="Close gallery"
-				onClick={onClose}
-			>
-				<svg viewBox="0 0 40 40" aria-hidden="true">
-					<line x1="4" y1="4" x2="36" y2="36" />
-					<line x1="36" y1="4" x2="4" y2="36" />
-				</svg>
-			</button>
-			{index > 0 && (
-				<button
-					type="button"
-					className="gallery-prev"
-					aria-label="Previous slide"
-					onClick={() => setIndex(index - 1)}
-				>
-					<svg viewBox="0 0 24 48" aria-hidden="true">
-						<polyline points="20 4 4 24 20 44" />
-					</svg>
-				</button>
-			)}
-			{index < lastIndex && (
-				<button
-					type="button"
-					className="gallery-next"
-					aria-label="Next slide"
-					onClick={() => setIndex(index + 1)}
-				>
-					<svg viewBox="0 0 24 48" aria-hidden="true">
-						<polyline points="4 4 20 24 4 44" />
-					</svg>
-				</button>
-			)}
-		</div>,
-		document.body,
-	);
+	return null;
 }
