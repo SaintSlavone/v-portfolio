@@ -95,6 +95,24 @@ function loadImageSize(src: string): Promise<{ width: number; height: number }> 
 	});
 }
 
+// Subset of PhotoSwipe's ZoomLevel passed to a zoom-level option function
+interface ZoomLevelLike {
+	panAreaSize: { x: number; y: number } | null;
+	elementSize: { x: number; y: number } | null;
+}
+
+// Uncapped "contain" ratio. PhotoSwipe's built-in "fit" caps at 1× so small
+// screenshots (e.g. Ellington's ~860px shots) would sit tiny and non-zoomable
+// in the middle — a click then closes instead of zooming. This scales them UP
+// to fill the frame while keeping the whole image visible (and zoomable).
+function containZoom(zoom: ZoomLevelLike): number {
+	if (!zoom.panAreaSize || !zoom.elementSize) return 1;
+	return Math.min(
+		zoom.panAreaSize.x / zoom.elementSize.x,
+		zoom.panAreaSize.y / zoom.elementSize.y,
+	);
+}
+
 // PhotoSwipe-powered gallery. Slide order follows Figma "X Iframe Window
 // Page": preview video first, then screenshots, then the info card last.
 // This component renders nothing itself — it just drives a PhotoSwipe
@@ -156,6 +174,12 @@ export default function ProjectGallery({ project, onClose }: ProjectGalleryProps
 				counter: false,
 				zoom: false, // no zoom button — scroll / double-tap still zoom images
 				escKey: false, // handled below so ESC never reaches XField's listener
+				clickToCloseNonZoomable: false, // clicking the video / info won't close
+				// Fill the frame regardless of source size; keep every image
+				// zoomable so a click zooms rather than closing the gallery
+				initialZoomLevel: containZoom,
+				secondaryZoomLevel: (zoom) => containZoom(zoom) * 2,
+				maxZoomLevel: (zoom) => containZoom(zoom) * 3,
 				mainClass: "project-gallery-pswp",
 				closeSVG: CLOSE_SVG,
 				arrowPrevSVG: ARROW_PREV_SVG,
