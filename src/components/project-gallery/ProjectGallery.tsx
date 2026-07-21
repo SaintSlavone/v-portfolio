@@ -83,6 +83,18 @@ function createInfoSlide(project: Project): HTMLDivElement {
 	return wrap;
 }
 
+// PhotoSwipe needs each image's real size up front (it never reads naturalWidth
+// off the loaded <img>) — without it, images render un-fitted and non-zoomable.
+// Reading it off a detached Image() also warms the browser cache for the slide.
+function loadImageSize(src: string): Promise<{ width: number; height: number }> {
+	return new Promise((resolve) => {
+		const img = new window.Image();
+		img.onload = () => resolve({ width: img.naturalWidth, height: img.naturalHeight });
+		img.onerror = () => resolve({ width: 1600, height: 1000 }); // 16:10 fallback
+		img.src = src;
+	});
+}
+
 // PhotoSwipe-powered gallery. Slide order follows Figma "X Iframe Window
 // Page": preview video first, then screenshots, then the info card last.
 // This component renders nothing itself — it just drives a PhotoSwipe
@@ -99,8 +111,9 @@ export default function ProjectGallery({ project, onClose }: ProjectGalleryProps
 		const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 		let pswp: PhotoSwipe | null = null;
-		// StrictMode mounts → unmounts → mounts effects in dev; deferring init a
-		// frame lets that settle so we never build two stacked instances
+		// StrictMode mounts → unmounts → mounts effects in dev; the async preload
+		// below defers init, and this guard drops the throwaway first pass so we
+		// never build two stacked instances
 		let cancelled = false;
 
 		// Capture phase + stopPropagation: the gallery swallows ESC before the
@@ -120,13 +133,16 @@ export default function ProjectGallery({ project, onClose }: ProjectGalleryProps
 			if (!cancelled) onCloseRef.current();
 		};
 
-		const raf = requestAnimationFrame(() => {
+		const open = async () => {
+			const sizes = await Promise.all(project.gallery.map(loadImageSize));
 			if (cancelled) return;
 
 			const dataSource: GallerySlideData[] = [
 				{ type: "video", videoSrc: project.video },
-				...project.gallery.map((src): GallerySlideData => ({
+				...project.gallery.map((src, i): GallerySlideData => ({
 					src,
+					width: sizes[i].width,
+					height: sizes[i].height,
 					alt: `${project.name} screenshot`,
 				})),
 				{ type: "info" },
@@ -188,11 +204,11 @@ export default function ProjectGallery({ project, onClose }: ProjectGalleryProps
 			pswp.on("destroy", handleDestroy);
 			window.addEventListener("keydown", handleEscape, true);
 			pswp.init();
-		});
+		};
+		open();
 
 		return () => {
 			cancelled = true;
-			cancelAnimationFrame(raf);
 			window.removeEventListener("keydown", handleEscape, true);
 			// destroy() re-enters handleDestroy, which nulls pswp; cancelled keeps
 			// it from bouncing onClose back at an already-unmounting parent
