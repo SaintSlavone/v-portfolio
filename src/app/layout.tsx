@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Montserrat } from "next/font/google";
 import "./Main.scss";
 import XField from "@/components/x-field/XField";
+import PageStage from "@/components/page-stage/PageStage";
 
 const montserrat = Montserrat({
 	subsets: ["latin"],
@@ -38,7 +39,7 @@ export default function RootLayout({
 					}}
 				/>
 				<XField />
-				{children}
+				<PageStage>{children}</PageStage>
 			</body>
 		</html>
 	);

@@ -22,3 +22,11 @@ a {
 	color: inherit;
 	text-decoration: none;
 }
+
+// Staggered element entrance — slides from --enter-from to the resting
+// position. Interior pages set direction / velocity / queue per element.
+@keyframes element-enter {
+	from {
+		transform: var(--enter-from, none);
+	}
+}

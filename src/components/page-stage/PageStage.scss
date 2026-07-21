@@ -1,0 +1,49 @@
+@use "../../styles/tokens" as *;
+
+// The page enters from the side opposite the X's exit — --enter-from is the
+// negation of XField's --exit, so the X and the content counter-move, then the
+// page settles centred. Keep the amounts in sync with XField's exit values.
+.page-stage {
+	// Clip the horizontal overshoot of sliding elements (e.g. project cards
+	// entering from the right) so they don't spawn a scrollbar. overflow-x:
+	// clip leaves the vertical axis free to scroll / overflow.
+	overflow-x: clip;
+
+	&.enter-top {
+		--enter-from: translateY(-80dvh);
+	}
+
+	&.enter-bottom {
+		--enter-from: translateY(80dvh);
+	}
+
+	&.enter-left {
+		--enter-from: translateX(-80vw);
+	}
+
+	&.enter-right {
+		--enter-from: translateX(80vw);
+	}
+
+	&.enter-top,
+	&.enter-bottom,
+	&.enter-left,
+	&.enter-right {
+		animation: page-enter 0.6s ease;
+	}
+}
+
+@keyframes page-enter {
+	from {
+		transform: var(--enter-from, none);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.page-stage.enter-top,
+	.page-stage.enter-bottom,
+	.page-stage.enter-left,
+	.page-stage.enter-right {
+		animation: none;
+	}
+}

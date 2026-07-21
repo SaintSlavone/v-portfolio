@@ -56,4 +56,43 @@
 			opacity: 0.7;
 		}
 	}
+
+	// Elements cascade in from the top (about enters from the top) — same
+	// distance, rising durations, so each moves slower than the one before
+	.about-name,
+	.about-role,
+	.about-bio,
+	.about-languages,
+	.about-cv {
+		--enter-from: translateY(-80dvh);
+		animation: element-enter 0.6s ease both;
+	}
+
+	.about-role {
+		animation-duration: 0.72s;
+	}
+
+	.about-bio {
+		animation-duration: 0.84s;
+	}
+
+	.about-languages {
+		animation-duration: 0.96s;
+	}
+
+	.about-cv {
+		animation-duration: 1.08s;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.about {
+		.about-name,
+		.about-role,
+		.about-bio,
+		.about-languages,
+		.about-cv {
+			animation: none;
+		}
+	}
 }
