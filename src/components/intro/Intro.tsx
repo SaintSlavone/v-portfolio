@@ -47,6 +47,8 @@ export default function Intro() {
 
 		const finish = () => {
 			sessionStorage.setItem(SESSION_KEY, "1");
+			// Cue the film-grain (Main.scss) to fade in a beat after the overlay
+			document.documentElement.dataset.introDone = "1";
 			setDone(true);
 		};
 

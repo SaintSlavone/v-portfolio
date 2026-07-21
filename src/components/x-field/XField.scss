@@ -30,7 +30,8 @@
 	inset: -150%;
 	z-index: 0;
 	pointer-events: none;
-	background-color: $color-bg;
+	// No fill — the body's background (and the grain behind it) shows through;
+	// only the grid lines are painted here
 	@include grid-texture;
 	transform: var(--exit, none);
 	transition: transform 0.6s ease;
