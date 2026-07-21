@@ -24,33 +24,30 @@ const TIMELINE: { phase: Phase; at: number }[] = [
 ];
 const TOTAL = 3600;
 
-// Overlays the hub and plays once per browser session, then unmounts to
-// reveal the hub underneath. Reduced-motion users skip straight to the hub.
+// Overlays the hub and plays once per browser session, then unmounts to reveal
+// the hub underneath. The overlay is rendered from the first paint (server +
+// pre-hydration) so it covers the hub with no flash on the first visit; the
+// layout's pre-paint script hides it for returning / reduced-motion visitors,
+// who then have it unmounted here once hydration runs.
 export default function Intro() {
-	const [play, setPlay] = useState(false);
+	const [done, setDone] = useState(false);
 	const [phase, setPhase] = useState<Phase>("presents");
 	const timers = useRef<number[]>([]);
 
-	// Gate: only the first visit of a session animates
 	useEffect(() => {
-		if (sessionStorage.getItem(SESSION_KEY)) return;
+		// Already played this session, or reduced motion: skip straight to the
+		// hub. The overlay was hidden pre-paint, so just unmount it.
 		const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-		if (reduceMotion) {
+		if (sessionStorage.getItem(SESSION_KEY) || reduceMotion) {
 			sessionStorage.setItem(SESSION_KEY, "1");
+			// eslint-disable-next-line react-hooks/set-state-in-effect
+			setDone(true);
 			return;
 		}
-		// One-time client-only gate: sessionStorage/matchMedia are unavailable
-		// during SSR, so the play decision must happen here after mount
-		// eslint-disable-next-line react-hooks/set-state-in-effect
-		setPlay(true);
-	}, []);
-
-	useEffect(() => {
-		if (!play) return;
 
 		const finish = () => {
 			sessionStorage.setItem(SESSION_KEY, "1");
-			setPlay(false);
+			setDone(true);
 		};
 
 		// Click / keypress fast-forwards to the fade-out (see annotation)
@@ -74,9 +71,9 @@ export default function Intro() {
 			window.removeEventListener("click", skip);
 			window.removeEventListener("keydown", skip);
 		};
-	}, [play]);
+	}, []);
 
-	if (!play) return null;
+	if (done) return null;
 
 	return (
 		<div className={`intro intro-phase-${phase}`} aria-hidden="true">

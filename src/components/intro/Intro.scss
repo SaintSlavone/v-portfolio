@@ -14,6 +14,13 @@
 	background-color: $color-bg;
 	transition: opacity 0.4s ease;
 
+	// Returning / reduced-motion visitors: the layout's pre-paint script flags
+	// the document so the overlay is hidden before it can paint — killing the
+	// hub-flash while still keeping it in the SSR markup for a clean unmount.
+	html[data-intro-skip] & {
+		display: none;
+	}
+
 	.intro-grid {
 		position: absolute;
 		inset: 0;
