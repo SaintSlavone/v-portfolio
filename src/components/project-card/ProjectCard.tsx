@@ -54,10 +54,15 @@ export default function ProjectCard({ project }: ProjectCardProps) {
 				<Image
 					className="card-thumb"
 					src={project.thumbnail}
-					alt=""
+					alt={`${project.name} — ${project.stack.join(", ")}`}
 					fill
 					sizes="(max-width: 600px) 100vw, 89vw"
 				/>
+				{/* The card carries no visible text by design; without this the
+				    projects page would be six images and nothing to index */}
+				<span className="visually-hidden">
+					{project.name} · {project.role} · {project.years} · {project.stack.join(", ")}
+				</span>
 				<video
 					ref={videoRef}
 					className="card-video"

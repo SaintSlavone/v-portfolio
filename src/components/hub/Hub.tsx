@@ -1,6 +1,7 @@
 import "./Hub.scss";
 import "./Adaptations.scss";
 import Link from "next/link";
+import site from "@/data/site.json";
 
 interface HubSection {
 	href: string;
@@ -20,7 +21,16 @@ export default function Hub() {
 		<main className="hub">
 			{/* The X itself lives in the persistent <XField> (root layout);
 			    the hub only overlays the quadrant nav on top of it */}
-			<span className="hub-wordmark">V K</span>
+			{/* The landing screen is wordless by design (just the X and the "V K"
+			    wordmark) — the heading and the one-liner live off screen so the
+			    page still has an h1 and an indexable summary */}
+			<h1 className="visually-hidden">
+				{site.name} — {site.jobTitle}
+			</h1>
+			<p className="visually-hidden">{site.description}</p>
+			<span className="hub-wordmark" aria-hidden="true">
+				V K
+			</span>
 			<nav className="hub-nav" aria-label="Main navigation">
 				{sections.map(({ href, label, position }) => (
 					<Link key={href} href={href} className={`hub-quadrant ${position}`}>
