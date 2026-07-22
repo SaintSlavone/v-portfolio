@@ -74,7 +74,7 @@ $font-body: var(--font-inter), sans-serif;
 
 // intro — welcoming "V Kostenko Presents" line (Figma display-2)
 @mixin text-intro {
-	font-family: $font-body;
+	font-family: $font-heading;
 	font-size: 2.625rem; // 42px
 	font-weight: 400;
 	letter-spacing: 0.02em;
