@@ -1,7 +1,26 @@
+import type { Metadata } from "next";
 import "./Skills.scss";
 import "./Adaptations.scss";
 import skills from "@/data/skills.json";
+import site from "@/data/site.json";
 import SkillsGraph from "@/components/skills-graph/SkillsGraph";
+import JsonLd from "@/components/json-ld/JsonLd";
+import { pageGraph } from "@/components/json-ld/schemas";
+
+const description =
+	"The stack Viacheslav Kostenko works in — frontend, 3D and WebVR, backend and tooling — as an interactive skills graph.";
+
+export const metadata: Metadata = {
+	title: "Skills",
+	description,
+	alternates: { canonical: "/skills" },
+	openGraph: {
+		url: "/skills",
+		title: `Skills · ${site.name}`,
+		description,
+		images: ["/opengraph-image"],
+	},
+};
 
 interface SkillTreeNode {
 	name: string;
@@ -39,6 +58,7 @@ function SkillsList({ branches }: { branches: SkillTreeNode[] }) {
 export default function SkillsPage() {
 	return (
 		<main className="skills">
+			<JsonLd data={pageGraph({ path: "/skills", name: `Skills · ${site.name}` })} />
 			<h1 className="skills-title">Skills</h1>
 			<SkillsGraph />
 			<SkillsList branches={skills.children} />
