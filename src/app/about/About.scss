@@ -50,6 +50,7 @@
 		text-decoration: underline;
 		text-underline-offset: 8px;
 		transition: opacity 0.3s ease;
+		user-select: none;
 
 		&:hover,
 		&:focus-visible {
@@ -84,35 +85,37 @@
 		animation-duration: 1.08s;
 	}
 
-	// Leaving for the hub unwinds the cascade back up through the top edge.
-	// Only the name / duration change — offset, easing curve and fill carry over
-	// from the entrance above. Quicker than arriving, and the order holds: the
-	// upper elements must out-run the lower ones or the two would bunch up.
+	// Leaving for the hub unwinds the cascade back up through the top edge, on a
+	// tighter clock than the entrance — the CV sits lowest and so has the whole
+	// column to cross, which sets the pace everything else is spread against.
+	// The order holds: upper elements out-run lower ones, so the gaps open up
+	// on the way out instead of the two bunching together.
 	.page-stage.is-leaving & {
 		.about-name,
 		.about-role,
 		.about-bio,
 		.about-languages,
 		.about-cv {
+			--exit-to: translateY(-110dvh);
 			animation-name: element-exit;
-			animation-duration: 0.4s;
+			animation-duration: 0.3s;
 			animation-timing-function: ease-in;
 		}
 
 		.about-role {
-			animation-duration: 0.48s;
+			animation-duration: 0.35s;
 		}
 
 		.about-bio {
-			animation-duration: 0.55s;
+			animation-duration: 0.4s;
 		}
 
 		.about-languages {
-			animation-duration: 0.62s;
+			animation-duration: 0.45s;
 		}
 
 		.about-cv {
-			animation-duration: 0.7s;
+			animation-duration: 0.5s;
 		}
 	}
 }

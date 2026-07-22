@@ -115,11 +115,13 @@ body::before {
 	}
 }
 
-// The mirror of the above, played when leaving for the hub: elements slide
-// back out to the very offset they arrived from. Reusing --enter-from keeps
-// the two halves of the trip in sync — a page only declares the offset once.
+// The mirror of the above, played when leaving for the hub. --exit-to is its
+// own offset rather than a reuse of --enter-from: an entrance only has to start
+// off screen, but an exit has to *end* clear of it, and an element that begins
+// near the far edge needs more than a screen of travel to get there. Falling
+// short leaves it parked in view until the hub swaps in.
 @keyframes element-exit {
 	to {
-		transform: var(--enter-from, none);
+		transform: var(--exit-to, none);
 	}
 }

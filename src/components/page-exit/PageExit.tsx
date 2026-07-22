@@ -11,19 +11,21 @@ import {
 	useState,
 } from "react";
 
-// Longest element exit on any interior page (see the per-page SCSS cascades).
-// The push to "/" is held back this long so the elements finish sliding off
-// before the hub replaces them.
-const EXIT_DURATION = 700;
+// Safety net only. The hub normally takes over the moment the last exit
+// animation lands (PageStage reports it) — this just guarantees the navigation
+// still happens if an animation is cancelled or never starts.
+const EXIT_TIMEOUT = 1000;
 
 interface PageExitContextValue {
 	isLeaving: boolean;
 	leaveToHub: () => void;
+	finishExit: () => void;
 }
 
 const PageExitContext = createContext<PageExitContextValue>({
 	isLeaving: false,
 	leaveToHub: () => {},
+	finishExit: () => {},
 });
 
 export function usePageExit() {
@@ -62,9 +64,17 @@ export default function PageExit({ children }: PageExitProps) {
 		};
 	}, []);
 
+	const goHome = useCallback(() => {
+		if (timeoutRef.current !== null) {
+			window.clearTimeout(timeoutRef.current);
+			timeoutRef.current = null;
+		}
+		router.push("/");
+	}, [router]);
+
 	const leaveToHub = useCallback(() => {
 		// Already on the hub, or an exit is mid-flight — nothing to play
-		if (pathname === "/" || timeoutRef.current !== null) return;
+		if (pathname === "/" || isLeaving) return;
 
 		if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
 			router.push("/");
@@ -72,14 +82,17 @@ export default function PageExit({ children }: PageExitProps) {
 		}
 
 		setLeavingFrom(pathname);
-		timeoutRef.current = window.setTimeout(() => {
-			timeoutRef.current = null;
-			router.push("/");
-		}, EXIT_DURATION);
-	}, [pathname, router]);
+		timeoutRef.current = window.setTimeout(goHome, EXIT_TIMEOUT);
+	}, [pathname, isLeaving, router, goHome]);
+
+	// Called by PageStage when the slowest exit animation has landed
+	const finishExit = useCallback(() => {
+		if (!isLeaving) return;
+		goHome();
+	}, [isLeaving, goHome]);
 
 	return (
-		<PageExitContext.Provider value={{ isLeaving, leaveToHub }}>
+		<PageExitContext.Provider value={{ isLeaving, leaveToHub, finishExit }}>
 			{children}
 		</PageExitContext.Provider>
 	);

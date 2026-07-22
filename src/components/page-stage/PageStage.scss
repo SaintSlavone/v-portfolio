@@ -9,20 +9,26 @@
 	// clip leaves the vertical axis free to scroll / overflow.
 	overflow-x: clip;
 
+	// --leave-to overshoots --enter-from: the block starts its exit on screen,
+	// so it needs more than one screen of travel to end fully clear of it
 	&.enter-top {
 		--enter-from: translateY(-80dvh);
+		--leave-to: translateY(-110dvh);
 	}
 
 	&.enter-bottom {
 		--enter-from: translateY(80dvh);
+		--leave-to: translateY(110dvh);
 	}
 
 	&.enter-left {
 		--enter-from: translateX(-80vw);
+		--leave-to: translateX(-110vw);
 	}
 
 	&.enter-right {
 		--enter-from: translateX(80vw);
+		--leave-to: translateX(110vw);
 	}
 
 	&.enter-top,
@@ -33,13 +39,13 @@
 	}
 
 	// Returning to the hub: the block slides back out the side it came in from
-	// while the X travels home. Quicker than the entrance and held off-screen
-	// (fill both) until the hub has replaced it.
+	// while the X travels home. Brisker than the entrance — a departure that
+	// takes as long as an arrival reads as hesitation.
 	&.is-leaving.enter-top,
 	&.is-leaving.enter-bottom,
 	&.is-leaving.enter-left,
 	&.is-leaving.enter-right {
-		animation: page-leave 0.5s ease-in both;
+		animation: page-leave 0.45s ease-in both;
 	}
 }
 
@@ -51,7 +57,7 @@
 
 @keyframes page-leave {
 	to {
-		transform: var(--enter-from, none);
+		transform: var(--leave-to, none);
 	}
 }
 

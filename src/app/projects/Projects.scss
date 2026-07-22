@@ -83,27 +83,31 @@
 	// the way in. Delays are restated because the entrance sets its own.
 	.page-stage.is-leaving & {
 		.projects-title {
+			--exit-to: translateX(110vw);
 			animation-name: element-exit;
-			animation-duration: 0.45s;
+			animation-duration: 0.35s;
 			animation-timing-function: ease-in;
 		}
 
 		.projects-grid .grid-row {
+			// A full-width card is nearly a screen wide on its own, so 110vw is
+			// what it takes for the trailing edge to actually clear the viewport
 			.project-card {
+				--exit-to: translateX(110vw);
 				animation-name: element-exit;
 				animation-delay: 0s;
-				animation-duration: 0.4s;
+				animation-duration: 0.3s;
 				animation-timing-function: ease-in;
 			}
 
 			.project-card:nth-child(2) {
-				animation-delay: 0.08s;
-				animation-duration: 0.48s;
+				animation-delay: 0.05s;
+				animation-duration: 0.36s;
 			}
 
 			.project-card:nth-child(3) {
-				animation-delay: 0.14s;
-				animation-duration: 0.55s;
+				animation-delay: 0.1s;
+				animation-duration: 0.42s;
 			}
 		}
 	}
