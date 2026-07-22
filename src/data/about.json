@@ -2,8 +2,26 @@
 	"name": "Viacheslav Kostenko",
 	"role": "Software Developer | Next.js & Node.js Specialist",
 	"bio": [
-		"Software developer specializing in interactive masterplan maps and WebVR experiences — Three.js, Mapbox GL, krpano — for real-estate clients.",
-		"Sole frontend owner of 5+ production projects and sole developer of a production e-commerce platform."
+		{
+			"variant": "lead",
+			"segments": [
+				{ "tone": "base", "text": "Software developer specializing in " },
+				{ "tone": "focus", "text": "interactive masterplan maps and WebVR experiences" },
+				{ "tone": "base", "text": " — " },
+				{ "tone": "stack", "text": "Three.js, Mapbox GL, krpano" },
+				{ "tone": "base", "text": " — for real-estate clients." }
+			]
+		},
+		{
+			"variant": "support",
+			"segments": [
+				{ "tone": "base", "text": "Sole frontend owner of " },
+				{ "tone": "metric", "text": "5+ production projects" },
+				{ "tone": "base", "text": " and sole developer of a " },
+				{ "tone": "metric", "text": "production e-commerce platform" },
+				{ "tone": "base", "text": "." }
+			]
+		}
 	],
 	"languages": ["English", "Polish", "Ukrainian"],
 	"cv": {

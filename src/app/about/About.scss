@@ -1,5 +1,9 @@
 @use "../../styles/tokens" as *;
 
+// One rhythm for the whole column: every text block — the bio's two lines
+// included — sits the same distance below the one above it
+$about-gap: 7vh;
+
 // Type roles map to Figma "X About Page" — see tokens for the role definitions
 .about {
 	@include grid-surface;
@@ -20,31 +24,65 @@
 
 	.about-role {
 		@include text-subtitle;
-		margin-top: 6vh;
+		margin-top: $about-gap;
 		text-align: center;
 	}
 
 	.about-bio {
 		@include text-body;
-		margin-top: 9vh;
+		margin-top: $about-gap;
 		max-width: 840px;
 		text-align: center;
 
-		p + p {
-			margin-top: 1em;
+		// The two paragraphs are not equal subtexts: the first states what I do,
+		// the second only qualifies the scale of it — so they sit on different
+		// levels instead of reading as one uniform block.
+		.about-bio-line {
+			+ .about-bio-line {
+				margin-top: $about-gap;
+			}
+
+			&--support {
+				font-size: 1.0625rem; // 17px
+				color: $color-text-muted;
+			}
+		}
+
+		// Inline subtexts within a line — what the work is, what it is built
+		// with, and what it added up to each get their own voice
+		.about-bio-part {
+			// Inter is loaded at 400/600 only — 500 would be faux-bolded
+			&--focus {
+				color: #ffffff;
+				font-weight: 600;
+			}
+
+			// Tooling reads as a label, not prose — separated by cut and
+			// spacing rather than color, since yellow belongs to the name
+			&--stack {
+				color: $color-text-secondary;
+				font-style: italic;
+				letter-spacing: 0.04em;
+			}
+
+			// Lifts inside the muted support line without out-shouting the lead
+			&--metric {
+				color: $color-text-body;
+				font-weight: 600;
+			}
 		}
 	}
 
 	.about-languages {
 		@include text-caption;
-		margin-top: 7vh;
+		margin-top: $about-gap;
 		text-transform: uppercase;
 		letter-spacing: 0.2em;
 	}
 
 	.about-cv {
 		z-index: 9;
-		margin-top: 5vh;
+		margin-top: $about-gap;
 		font-family: $font-heading;
 		font-size: 1.25rem; // 20px
 		font-weight: 500;

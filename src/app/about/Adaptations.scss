@@ -1,25 +1,38 @@
 @use "../../styles/tokens" as *;
 
+// Same single rhythm as About.scss, tightened per orientation — five gaps have
+// to fit a phone screen, so the step shrinks but stays even
+$about-gap-portrait: 4vh;
+$about-gap-landscape: 3vh;
+
 @media screen and (max-width: 600px) and (max-height: 1000px) and (orientation: portrait) {
 	.about {
 		padding: 14vh 20px 10vh;
 
 		.about-role {
-			margin-top: 4vh;
+			margin-top: $about-gap-portrait;
 			font-size: 1rem; // 16px
 		}
 
 		.about-bio {
-			margin-top: 6vh;
+			margin-top: $about-gap-portrait;
 			font-size: 1.0625rem; // 17px
+
+			.about-bio-line + .about-bio-line {
+				margin-top: $about-gap-portrait;
+			}
+
+			.about-bio-line--support {
+				font-size: 0.9375rem; // 15px — keeps the step under the lead
+			}
 		}
 
 		.about-languages {
-			margin-top: 5vh;
+			margin-top: $about-gap-portrait;
 		}
 
 		.about-cv {
-			margin-top: 4vh;
+			margin-top: $about-gap-portrait;
 		}
 	}
 }
@@ -33,22 +46,30 @@
 		padding: 8vh 24px 12vh;
 
 		.about-role {
-			margin-top: 3vh;
+			margin-top: $about-gap-landscape;
 			font-size: 1rem;
 		}
 
 		.about-bio {
-			margin-top: 5vh;
+			margin-top: $about-gap-landscape;
 			font-size: 1rem;
 			max-width: 680px;
+
+			.about-bio-line + .about-bio-line {
+				margin-top: $about-gap-landscape;
+			}
+
+			.about-bio-line--support {
+				font-size: 0.875rem; // 14px
+			}
 		}
 
 		.about-languages {
-			margin-top: 4vh;
+			margin-top: $about-gap-landscape;
 		}
 
 		.about-cv {
-			margin-top: 3vh;
+			margin-top: $about-gap-landscape;
 		}
 	}
 }
