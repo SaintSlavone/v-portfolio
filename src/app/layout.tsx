@@ -1,9 +1,10 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Montserrat } from "next/font/google";
 import "./Main.scss";
 import XField from "@/components/x-field/XField";
 import PageStage from "@/components/page-stage/PageStage";
 import PageExit from "@/components/page-exit/PageExit";
+import site from "@/data/site.json";
 
 const montserrat = Montserrat({
 	subsets: ["latin"],
@@ -17,9 +18,55 @@ const inter = Inter({
 	variable: "--font-inter",
 });
 
+// metadataBase resolves every relative URL below (canonicals, OG images) —
+// site.url is the single place the production domain is declared
 export const metadata: Metadata = {
-	title: "Kostenko",
-	description: "Viacheslav Portfolio",
+	metadataBase: new URL(site.url),
+	title: {
+		default: site.title,
+		template: `%s · ${site.name}`,
+	},
+	description: site.description,
+	keywords: site.keywords,
+	applicationName: site.name,
+	authors: [{ name: site.name, url: site.url }],
+	creator: site.name,
+	publisher: site.name,
+	alternates: {
+		canonical: "/",
+	},
+	openGraph: {
+		type: "website",
+		url: "/",
+		siteName: site.name,
+		title: site.title,
+		description: site.description,
+		locale: site.locale,
+	},
+	twitter: {
+		card: "summary_large_image",
+		title: site.title,
+		description: site.description,
+	},
+	robots: {
+		index: true,
+		follow: true,
+		googleBot: {
+			index: true,
+			follow: true,
+			"max-image-preview": "large",
+			"max-snippet": -1,
+			"max-video-preview": -1,
+		},
+	},
+	formatDetection: {
+		telephone: false,
+	},
+};
+
+export const viewport: Viewport = {
+	themeColor: "#000000",
+	colorScheme: "dark",
 };
 
 export default function RootLayout({
@@ -28,7 +75,7 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="en" suppressHydrationWarning>
+		<html lang={site.language} suppressHydrationWarning>
 			<body className={`${montserrat.variable} ${inter.variable}`}>
 				{/* Runs before the overlay paints: the intro is rendered from the
 				    first paint so it covers the hub with no flash on first visit,
