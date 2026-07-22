@@ -15,7 +15,8 @@
 
 	.projects-title {
 		@include text-section-title;
-		position: absolute;
+		position: fixed;
+		z-index: 21;
 		top: 3.7vh;
 		left: 0;
 		width: 100%;
