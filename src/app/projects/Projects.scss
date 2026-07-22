@@ -79,9 +79,10 @@
 	}
 
 	// Leaving for the hub sends everything back off the right edge. The queue
-	// keeps the entrance order — the leftmost card leads and the trailing ones
-	// are held back — so the gaps widen on the way out just as they closed on
-	// the way in. Delays are restated because the entrance sets its own.
+	// inverts the entrance: travel is now rightward, so the rightmost card is
+	// the one nearest the edge and has to lead, with the cards behind it slower
+	// and held back. Keep the entrance order here and the left card overruns
+	// its neighbours. Delays are restated because the entrance sets its own.
 	.page-stage.is-leaving & {
 		.projects-title {
 			--exit-to: translateX(110vw);
@@ -91,24 +92,25 @@
 		}
 
 		.projects-grid .grid-row {
-			// A full-width card is nearly a screen wide on its own, so 110vw is
-			// what it takes for the trailing edge to actually clear the viewport
+			// The default is the leftmost card — last out, so the slowest and the
+			// most held back. A full-width card is nearly a screen wide on its
+			// own, so 110vw is what the trailing edge needs to clear the viewport.
 			.project-card {
 				--exit-to: translateX(110vw);
 				animation-name: element-exit;
-				animation-delay: 0s;
-				animation-duration: 0.3s;
+				animation-delay: 0.08s;
+				animation-duration: 0.42s;
 				animation-timing-function: ease-in;
 			}
 
 			.project-card:nth-child(2) {
-				animation-delay: 0.05s;
+				animation-delay: 0.04s;
 				animation-duration: 0.36s;
 			}
 
 			.project-card:nth-child(3) {
-				animation-delay: 0.1s;
-				animation-duration: 0.42s;
+				animation-delay: 0s;
+				animation-duration: 0.3s;
 			}
 		}
 	}

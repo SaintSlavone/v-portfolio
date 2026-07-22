@@ -75,8 +75,9 @@
 	}
 
 	// Leaving for the hub drops everything back down through the bottom edge.
-	// The title sits highest and so has the furthest to fall — it leads, which
-	// keeps the spacing opening up instead of collapsing on the way out.
+	// Order is the reverse of the entrance: whatever sits nearest the edge being
+	// left through has to lead, so the form goes first and the title last. Lead
+	// with the title instead and it simply falls onto the rows beneath it.
 	.page-stage.is-leaving & {
 		.contacts-title,
 		.contacts-list,
@@ -91,7 +92,8 @@
 			animation-duration: 0.4s;
 		}
 
-		.contact-form {
+		// Highest up, so the longest fall — this one sets the page's exit length
+		.contacts-title {
 			animation-duration: 0.5s;
 		}
 	}
