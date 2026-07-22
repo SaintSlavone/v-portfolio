@@ -3,6 +3,7 @@ import { Inter, Montserrat } from "next/font/google";
 import "./Main.scss";
 import XField from "@/components/x-field/XField";
 import PageStage from "@/components/page-stage/PageStage";
+import PageExit from "@/components/page-exit/PageExit";
 
 const montserrat = Montserrat({
 	subsets: ["latin"],
@@ -38,8 +39,10 @@ export default function RootLayout({
 						__html: `try{if(sessionStorage.getItem('intro-played')||matchMedia('(prefers-reduced-motion: reduce)').matches){document.documentElement.dataset.introSkip='1'}}catch(e){}`,
 					}}
 				/>
-				<XField />
-				<PageStage>{children}</PageStage>
+				<PageExit>
+					<XField />
+					<PageStage>{children}</PageStage>
+				</PageExit>
 			</body>
 		</html>
 	);

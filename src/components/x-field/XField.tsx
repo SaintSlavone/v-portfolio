@@ -3,8 +3,9 @@
 import "./XField.scss";
 import "./Adaptations.scss";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { usePathname } from "next/navigation";
+import { MouseEvent, useEffect } from "react";
+import { usePageExit } from "@/components/page-exit/PageExit";
 
 // Each interior route occupies one hub quadrant. The persistent X slides
 // toward that quadrant on navigation, leaving the opposite arms on screen as
@@ -21,8 +22,10 @@ const routeState: Record<string, { exit: string; arms: string }> = {
 // unmounts. Navigation only swaps a class, and CSS transitions the transform.
 export default function XField() {
 	const pathname = usePathname();
-	const router = useRouter();
-	const state = routeState[pathname];
+	const { isLeaving, leaveToHub } = usePageExit();
+	// While the page slides out the X is already on its way home, so it drops
+	// back to the hub state the moment the exit starts rather than on arrival
+	const state = isLeaving ? undefined : routeState[pathname];
 	const isHub = !state;
 
 	// ESC returns to the hub from any interior page. The gallery overlay
@@ -30,11 +33,19 @@ export default function XField() {
 	useEffect(() => {
 		if (isHub) return;
 		const handleKeyDown = (event: KeyboardEvent) => {
-			if (event.key === "Escape") router.push("/");
+			if (event.key === "Escape") leaveToHub();
 		};
 		window.addEventListener("keydown", handleKeyDown);
 		return () => window.removeEventListener("keydown", handleKeyDown);
-	}, [isHub, router]);
+	}, [isHub, leaveToHub]);
+
+	// The links keep their href (prefetch, middle-click, crawlers) but the
+	// plain click is intercepted so the exit animation can play first
+	const handleReturn = (event: MouseEvent<HTMLAnchorElement>) => {
+		if (event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return;
+		event.preventDefault();
+		leaveToHub();
+	};
 
 	const exitClass = state ? state.exit : "";
 	const stateClass = isHub ? "is-hub" : `is-interior ${state.exit} ${state.arms}`;
@@ -58,8 +69,18 @@ export default function XField() {
 				</svg>
 				{!isHub && (
 					<>
-						<Link href="/" aria-label="Back to home" className="x-field-return" />
-						<Link href="/" aria-label="Back to home" className="x-field-wordmark">
+						<Link
+							href="/"
+							aria-label="Back to home"
+							className="x-field-return"
+							onClick={handleReturn}
+						/>
+						<Link
+							href="/"
+							aria-label="Back to home"
+							className="x-field-wordmark"
+							onClick={handleReturn}
+						>
 							V K
 						</Link>
 					</>

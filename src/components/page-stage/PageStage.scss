@@ -31,6 +31,16 @@
 	&.enter-right {
 		animation: page-enter 0.6s ease;
 	}
+
+	// Returning to the hub: the block slides back out the side it came in from
+	// while the X travels home. Quicker than the entrance and held off-screen
+	// (fill both) until the hub has replaced it.
+	&.is-leaving.enter-top,
+	&.is-leaving.enter-bottom,
+	&.is-leaving.enter-left,
+	&.is-leaving.enter-right {
+		animation: page-leave 0.5s ease-in both;
+	}
 }
 
 @keyframes page-enter {
@@ -39,11 +49,21 @@
 	}
 }
 
+@keyframes page-leave {
+	to {
+		transform: var(--enter-from, none);
+	}
+}
+
 @media (prefers-reduced-motion: reduce) {
 	.page-stage.enter-top,
 	.page-stage.enter-bottom,
 	.page-stage.enter-left,
-	.page-stage.enter-right {
+	.page-stage.enter-right,
+	.page-stage.is-leaving.enter-top,
+	.page-stage.is-leaving.enter-bottom,
+	.page-stage.is-leaving.enter-left,
+	.page-stage.is-leaving.enter-right {
 		animation: none;
 	}
 }

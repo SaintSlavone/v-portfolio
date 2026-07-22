@@ -114,3 +114,12 @@ body::before {
 		transform: var(--enter-from, none);
 	}
 }
+
+// The mirror of the above, played when leaving for the hub: elements slide
+// back out to the very offset they arrived from. Reusing --enter-from keeps
+// the two halves of the trip in sync — a page only declares the offset once.
+@keyframes element-exit {
+	to {
+		transform: var(--enter-from, none);
+	}
+}
