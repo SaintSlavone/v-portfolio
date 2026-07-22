@@ -22,6 +22,7 @@
 		text-align: center;
 		--enter-from: translateX(80vw);
 		animation: element-enter 0.55s ease both;
+		user-select: none;
 	}
 
 	// Figma geometry (1920×1080): rows of 628/297/628, 1707 full-width,
@@ -72,6 +73,37 @@
 			.project-card:nth-child(3) {
 				animation-delay: 0.2s;
 				animation-duration: 0.74s;
+			}
+		}
+	}
+
+	// Leaving for the hub sends everything back off the right edge. The queue
+	// keeps the entrance order — the leftmost card leads and the trailing ones
+	// are held back — so the gaps widen on the way out just as they closed on
+	// the way in. Delays are restated because the entrance sets its own.
+	.page-stage.is-leaving & {
+		.projects-title {
+			animation-name: element-exit;
+			animation-duration: 0.45s;
+			animation-timing-function: ease-in;
+		}
+
+		.projects-grid .grid-row {
+			.project-card {
+				animation-name: element-exit;
+				animation-delay: 0s;
+				animation-duration: 0.4s;
+				animation-timing-function: ease-in;
+			}
+
+			.project-card:nth-child(2) {
+				animation-delay: 0.08s;
+				animation-duration: 0.48s;
+			}
+
+			.project-card:nth-child(3) {
+				animation-delay: 0.14s;
+				animation-duration: 0.55s;
 			}
 		}
 	}

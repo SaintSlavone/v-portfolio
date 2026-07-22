@@ -83,6 +83,38 @@
 	.about-cv {
 		animation-duration: 1.08s;
 	}
+
+	// Leaving for the hub unwinds the cascade back up through the top edge.
+	// Only the name / duration change — offset, easing curve and fill carry over
+	// from the entrance above. Quicker than arriving, and the order holds: the
+	// upper elements must out-run the lower ones or the two would bunch up.
+	.page-stage.is-leaving & {
+		.about-name,
+		.about-role,
+		.about-bio,
+		.about-languages,
+		.about-cv {
+			animation-name: element-exit;
+			animation-duration: 0.4s;
+			animation-timing-function: ease-in;
+		}
+
+		.about-role {
+			animation-duration: 0.48s;
+		}
+
+		.about-bio {
+			animation-duration: 0.55s;
+		}
+
+		.about-languages {
+			animation-duration: 0.62s;
+		}
+
+		.about-cv {
+			animation-duration: 0.7s;
+		}
+	}
 }
 
 @media (prefers-reduced-motion: reduce) {

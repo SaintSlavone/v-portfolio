@@ -10,6 +10,7 @@
 
 	.contacts-title {
 		@include text-section-title;
+		user-select: none;
 	}
 
 	// The list starts below the top X return zone (24vh) so the
@@ -52,6 +53,7 @@
 		.contacts-location {
 			@include text-caption;
 			font-size: 1.125rem; // 18px
+			user-select: none;
 		}
 	}
 
@@ -60,6 +62,7 @@
 	.contacts-title,
 	.contacts-list,
 	.contact-form {
+		user-select: none;
 		--enter-from: translateY(80dvh);
 		animation: element-enter 0.6s ease both;
 	}
@@ -70,6 +73,27 @@
 
 	.contact-form {
 		animation-duration: 0.96s;
+	}
+
+	// Leaving for the hub drops everything back down through the bottom edge.
+	// The title sits highest and so has the furthest to fall — it leads, which
+	// keeps the spacing opening up instead of collapsing on the way out.
+	.page-stage.is-leaving & {
+		.contacts-title,
+		.contacts-list,
+		.contact-form {
+			animation-name: element-exit;
+			animation-duration: 0.4s;
+			animation-timing-function: ease-in;
+		}
+
+		.contacts-list {
+			animation-duration: 0.55s;
+		}
+
+		.contact-form {
+			animation-duration: 0.7s;
+		}
 	}
 }
 
