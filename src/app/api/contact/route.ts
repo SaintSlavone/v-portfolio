@@ -2,9 +2,8 @@
 import { Resend } from "resend";
 import { NextResponse } from "next/server";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 export async function POST(req: Request) {
+	const resend = new Resend(process.env.RESEND_API_KEY);
 	const { first_name, email, form_message, website } = await req.json();
 
 	// Honeypot: bots fill hidden fields, humans don't
