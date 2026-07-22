@@ -125,7 +125,7 @@ const initialView: View = {
 
 // Inertia tuning. Decays are per-millisecond factors so the glide feels the
 // same on any refresh rate; speeds are viewBox units per millisecond.
-const PAN_DECAY = 0.996;
+const PAN_DECAY = 0.993;
 const PAN_MIN_SPEED = 0.015;
 const PAN_MAX_SPEED = 4;
 const ZOOM_DECAY = 0.99;

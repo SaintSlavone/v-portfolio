@@ -4,9 +4,7 @@ import "./ProjectCard.scss";
 import "./Adaptations.scss";
 import Image from "next/image";
 import { useRef, useState } from "react";
-import ProjectGallery, {
-	Project,
-} from "@/components/project-gallery/ProjectGallery";
+import ProjectGallery, { Project } from "@/components/project-gallery/ProjectGallery";
 
 interface ProjectCardProps {
 	project: Project;
@@ -71,10 +69,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
 				/>
 			</button>
 			{galleryOpen && (
-				<ProjectGallery
-					project={project}
-					onClose={() => setGalleryOpen(false)}
-				/>
+				<ProjectGallery project={project} onClose={() => setGalleryOpen(false)} />
 			)}
 		</>
 	);

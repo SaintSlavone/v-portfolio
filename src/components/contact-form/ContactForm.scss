@@ -10,6 +10,7 @@
 		@include text-section-title;
 		font-size: 1.5rem; // 24px
 		text-align: center;
+		user-select: none;
 	}
 
 	.form-fields {
@@ -21,6 +22,7 @@
 			flex: 1;
 			height: 56px;
 			padding: 0 20px;
+			user-select: none;
 		}
 	}
 
@@ -35,6 +37,7 @@
 
 		&::placeholder {
 			color: $color-text-muted;
+			user-select: none;
 		}
 
 		&:focus {
@@ -59,6 +62,7 @@
 		color: $color-bg;
 		cursor: pointer;
 		transition: opacity 0.3s ease;
+		user-select: none;
 
 		&:hover:not(:disabled),
 		&:focus-visible:not(:disabled) {
