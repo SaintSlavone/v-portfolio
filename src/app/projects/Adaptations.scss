@@ -14,9 +14,11 @@
 			gap: 24px;
 
 			.grid-row {
-				&.row-top,
-				&.row-wide,
-				&.row-bottom {
+				// [data-count] matched so this outweighs the desktop rules that
+				// refit a short trailing row — one column wins on every shape here
+				&.row-top[data-count],
+				&.row-wide[data-count],
+				&.row-bottom[data-count] {
 					grid-template-columns: 1fr;
 					row-gap: 24px;
 					height: auto;

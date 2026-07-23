@@ -22,11 +22,32 @@ export const metadata: Metadata = {
 	},
 };
 
-// Fixed 6-slot layout from Figma "X Projects Page" — 3 cards / 1 full-width /
-// 2 cards; the non-standard rhythm is intentional (see design annotation)
+// The Figma "X Projects Page" rhythm — 3 cards / 1 full-width / 2 cards — is a
+// repeating cadence, not a six-slot page. Cycling it keeps any number of
+// projects on the same visual beat; only the closing row may come up short.
+const ROW_PATTERN = [
+	{ className: "row-top", size: 3 },
+	{ className: "row-wide", size: 1 },
+	{ className: "row-bottom", size: 2 },
+];
+
+function buildRows<T extends { id: string }>(items: T[]) {
+	const rows: { className: string; items: T[] }[] = [];
+
+	for (let index = 0; index < items.length;) {
+		const shape = ROW_PATTERN[rows.length % ROW_PATTERN.length];
+		rows.push({
+			className: shape.className,
+			items: items.slice(index, index + shape.size),
+		});
+		index += shape.size;
+	}
+
+	return rows;
+}
+
 export default function ProjectsPage() {
-	const rows = [projects.slice(0, 3), projects.slice(3, 4), projects.slice(4, 6)];
-	const rowClasses = ["row-top", "row-wide", "row-bottom"];
+	const rows = buildRows(projects);
 
 	return (
 		<main className="projects">
@@ -40,9 +61,13 @@ export default function ProjectsPage() {
 			/>
 			<h1 className="projects-title">Projects</h1>
 			<div className="projects-grid">
-				{rows.map((row, index) => (
-					<div key={rowClasses[index]} className={`grid-row ${rowClasses[index]}`}>
-						{row.map((project) => (
+				{rows.map((row) => (
+					<div
+						key={row.items[0].id}
+						className={`grid-row ${row.className}`}
+						data-count={row.items.length}
+					>
+						{row.items.map((project) => (
 							<ProjectCard key={project.id} project={project} />
 						))}
 					</div>

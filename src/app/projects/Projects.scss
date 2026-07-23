@@ -28,7 +28,10 @@
 
 	// Figma geometry (1920×1080): rows of 628/297/628, 1707 full-width,
 	// 833/833 — the rows do not share column lines, so each row is its
-	// own grid instead of one common template
+	// own grid instead of one common template.
+	// The rhythm repeats for any project count, so the closing row can hold
+	// fewer cards than its shape defines — [data-count] refits those instead
+	// of leaving the empty slot the design template would carve out.
 	.projects-grid {
 		display: flex;
 		flex-direction: column;
@@ -45,6 +48,14 @@
 				grid-template-columns: 628fr 297fr 628fr;
 				column-gap: 4vw;
 				height: 29vh;
+
+				&[data-count="2"] {
+					grid-template-columns: 1fr 1fr;
+				}
+
+				&[data-count="1"] {
+					grid-template-columns: 1fr;
+				}
 			}
 
 			&.row-wide {
@@ -56,6 +67,10 @@
 				grid-template-columns: 1fr 1fr;
 				column-gap: 2.1vw;
 				height: 38.5vh;
+
+				&[data-count="1"] {
+					grid-template-columns: 1fr;
+				}
 			}
 
 			// Cards fly in from the right at different speeds. The leftmost
