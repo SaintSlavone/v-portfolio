@@ -78,7 +78,7 @@ export default function RootLayout({
 	return (
 		<html lang={site.language} suppressHydrationWarning>
 			<Script
-				src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
+				src="https://www.googletagmanager.com/gtag/js?id=G-HP5JLJVLXT"
 				strategy="afterInteractive"
 			/>
 
@@ -87,7 +87,7 @@ export default function RootLayout({
 						window.dataLayer = window.dataLayer || [];
 						function gtag(){dataLayer.push(arguments);}
 						gtag('js', new Date());
-						gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}');
+						gtag('config', 'G-HP5JLJVLXT');
 					  `}
 			</Script>
 			<body className={`${montserrat.variable} ${inter.variable}`}>
