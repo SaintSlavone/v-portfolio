@@ -2,10 +2,10 @@
 	{
 		"id": "saas",
 		"name": "Saas Interactive Map",
-		"role": "Sole frontend developer",
-		"years": "2024 — 2026",
-		"duration": "ongoing",
-		"stack": ["React", "Next.js", "TypeScript", "Mapbox GL", "SCSS"],
+		"role": "Frontend developer",
+		"years": "2024",
+		"duration": "2 months",
+		"stack": ["React", "JavaScript", "SCSS"],
 		"links": {
 			"live": "https://saas-staging.visengine.app",
 			"github": null
@@ -22,10 +22,10 @@
 	{
 		"id": "alaqtar",
 		"name": "Alaqtar Interactive Map",
-		"role": "Sole frontend developer",
-		"years": "2024 — 2026",
-		"duration": "ongoing",
-		"stack": ["React", "Next.js", "TypeScript", "Mapbox GL", "SCSS"],
+		"role": "Frontend developer",
+		"years": "2024",
+		"duration": "2 months",
+		"stack": ["React", "JavaScript", "SCSS"],
 		"links": {
 			"live": "https://alaqtar-staging.visengine.app",
 			"github": null
@@ -42,10 +42,10 @@
 	{
 		"id": "niseko",
 		"name": "Niseko Interactive Map",
-		"role": "Sole frontend developer",
-		"years": "2024 — 2026",
-		"duration": "ongoing",
-		"stack": ["React", "Next.js", "TypeScript", "Mapbox GL", "SCSS"],
+		"role": "Frontend developer",
+		"years": "2024",
+		"duration": "2 months",
+		"stack": ["React", "JavaScript", "Pannellum", "SCSS"],
 		"links": {
 			"live": "https://niseko-golf-estates.visengine.app",
 			"github": null
@@ -64,7 +64,19 @@
 		"role": "Sole developer",
 		"years": "2023 — 2026",
 		"duration": "ongoing",
-		"stack": ["Next.js", "Node.js", "Express", "MySQL", "Nginx"],
+		"stack": [
+			"HTML",
+			"CSS",
+			"SCSS",
+			"JavaScript",
+			"React",
+			"Next.js",
+			"Node.js",
+			"Express",
+			"MySQL",
+			"Nginx",
+			"Google Analytics"
+		],
 		"links": {
 			"live": "https://www.wallpapermarket.org/",
 			"github": null
@@ -83,10 +95,10 @@
 	{
 		"id": "albarari",
 		"name": "Albarari Interactive Map",
-		"role": "Sole frontend developer",
-		"years": "2024 — 2026",
-		"duration": "ongoing",
-		"stack": ["React", "Next.js", "TypeScript", "Mapbox GL", "SCSS"],
+		"role": "Frontend developer",
+		"years": "2025 — 2026",
+		"duration": "3 months",
+		"stack": ["Next.js", "TypeScript", "SCSS"],
 		"links": {
 			"live": "https://albarari-staging.visengine.app",
 			"github": null
@@ -99,14 +111,29 @@
 		]
 	},
 	{
-		"id": "krpano2",
+		"id": "krpano1",
 		"name": "McCarthy Stone VR Tours",
-		"role": "Sole frontend developer",
+		"role": "Sole developer",
 		"years": "2026",
-		"duration": "2 months",
-		"stack": ["krpano", "JavaScript", "Blender"],
+		"duration": "2 weeks",
+		"stack": ["krpano", "JavaScript", "Blender", "XML"],
 		"links": {
 			"live": "https://vr.visengine.app/vr_tour_k1/tour.html",
+			"github": null
+		},
+		"thumbnail": "/project-imgs/krpano1.jpg",
+		"video": "/project-videos/krpano1.mp4",
+		"gallery": []
+	},
+	{
+		"id": "krpano2",
+		"name": "McCarthy Stone VR Tours",
+		"role": "Sole developer",
+		"years": "2026",
+		"duration": "2 weeks",
+		"stack": ["krpano", "JavaScript", "Blender", "XML"],
+		"links": {
+			"live": "https://vr.visengine.app/vr_tour_k2/tour.html",
 			"github": null
 		},
 		"thumbnail": "/project-imgs/krpano2.jpg",
@@ -117,11 +144,11 @@
 		"id": "ellington",
 		"name": "Ellington Properties",
 		"role": "Sole frontend developer",
-		"years": "2024 — 2026",
-		"duration": "ongoing",
-		"stack": ["React", "Next.js", "TypeScript", "Mapbox GL", "SCSS"],
+		"years": "2024",
+		"duration": "2 months",
+		"stack": ["React", "JavaScript", "SCSS"],
 		"links": {
-			"live": null,
+			"live": "https://ellington-staging.visengine.app/",
 			"github": null
 		},
 		"thumbnail": "/project-imgs/ellington.jpg",
