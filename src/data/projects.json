@@ -1,89 +1,33 @@
 [
 	{
-		"id": "ellington",
-		"name": "Ellington Properties",
+		"id": "saas",
+		"name": "Saas Interactive Map",
 		"role": "Sole frontend developer",
-		"years": "2023 — 2024",
-		"duration": "8 months",
-		"stack": ["Next.js", "Three.js", "Mapbox GL", "Node.js"],
+		"years": "2024 — 2026",
+		"duration": "ongoing",
+		"stack": ["React", "Next.js", "TypeScript", "Mapbox GL", "SCSS"],
 		"links": {
-			"live": "https://example.com/ellington",
-			"github": "https://github.com/SaintSlavone"
-		},
-		"thumbnail": "/project-imgs/ellington.jpg",
-		"video": "/project-videos/ellington.mp4",
-		"gallery": [
-			"/project-imgs/galleries/ellington-gallerie/2.png",
-			"/project-imgs/galleries/ellington-gallerie/3.png",
-			"/project-imgs/galleries/ellington-gallerie/4.png",
-			"/project-imgs/galleries/ellington-gallerie/5.png",
-			"/project-imgs/galleries/ellington-gallerie/6.png",
-			"/project-imgs/galleries/ellington-gallerie/7.png",
-			"/project-imgs/galleries/ellington-gallerie/8.png",
-			"/project-imgs/galleries/ellington-gallerie/9.png"
-		]
-	},
-	{
-		"id": "albarari",
-		"name": "Al Barari",
-		"role": "Sole frontend developer",
-		"years": "2024 — 2025",
-		"duration": "6 months",
-		"stack": ["Next.js", "TypeScript", "SCSS", "krpano"],
-		"links": {
-			"live": "https://example.com/albarari",
+			"live": "https://saas-staging.visengine.app",
 			"github": null
 		},
-		"thumbnail": "/project-imgs/albarari.jpg",
-		"video": "/project-videos/albarari.mp4",
+		"thumbnail": "/project-imgs/saas.jpg",
+		"video": "/project-videos/saas.mp4",
 		"gallery": [
-			"/project-imgs/galleries/albarari-gallerie/3.jpg",
-			"/project-imgs/galleries/albarari-gallerie/4.jpg"
+			"/project-imgs/galleries/saas-gallerie/2.png",
+			"/project-imgs/galleries/saas-gallerie/3.png",
+			"/project-imgs/galleries/saas-gallerie/4.png",
+			"/project-imgs/galleries/saas-gallerie/5.png"
 		]
-	},
-	{
-		"id": "niseko",
-		"name": "Niseko Masterplan",
-		"role": "Frontend developer",
-		"years": "2024",
-		"duration": "4 months",
-		"stack": ["React", "Mapbox GL", "SVG", "SCSS"],
-		"links": {
-			"live": "https://example.com/niseko",
-			"github": null
-		},
-		"thumbnail": "/project-imgs/niseko.jpg",
-		"video": "/project-videos/niseko.mp4",
-		"gallery": [
-			"/project-imgs/galleries/niseko-gallerie/2.png",
-			"/project-imgs/galleries/niseko-gallerie/3.png",
-			"/project-imgs/galleries/niseko-gallerie/4.png"
-		]
-	},
-	{
-		"id": "krpano2",
-		"name": "Virtual Tour Engine",
-		"role": "Sole developer",
-		"years": "2023",
-		"duration": "5 months",
-		"stack": ["krpano", "JavaScript", "Node.js"],
-		"links": {
-			"live": "https://example.com/krpano",
-			"github": "https://github.com/SaintSlavone"
-		},
-		"thumbnail": "/project-imgs/krpano2.jpg",
-		"video": "/project-videos/krpano2.mp4",
-		"gallery": []
 	},
 	{
 		"id": "alaqtar",
-		"name": "Al Aqtar",
-		"role": "Frontend developer",
-		"years": "2025",
-		"duration": "3 months",
-		"stack": ["Next.js", "Three.js", "SCSS"],
+		"name": "Alaqtar Interactive Map",
+		"role": "Sole frontend developer",
+		"years": "2024 — 2026",
+		"duration": "ongoing",
+		"stack": ["React", "Next.js", "TypeScript", "Mapbox GL", "SCSS"],
 		"links": {
-			"live": "https://example.com/alaqtar",
+			"live": "https://alaqtar-staging.visengine.app",
 			"github": null
 		},
 		"thumbnail": "/project-imgs/alaqtar.jpg",
@@ -96,23 +40,99 @@
 		]
 	},
 	{
-		"id": "saas",
-		"name": "SaaS Platform",
+		"id": "niseko",
+		"name": "Niseko Interactive Map",
 		"role": "Sole frontend developer",
-		"years": "2025",
+		"years": "2024 — 2026",
 		"duration": "ongoing",
-		"stack": ["Next.js", "TypeScript", "Node.js", "PostgreSQL"],
+		"stack": ["React", "Next.js", "TypeScript", "Mapbox GL", "SCSS"],
 		"links": {
-			"live": "https://example.com/saas",
-			"github": "https://github.com/SaintSlavone"
+			"live": "https://niseko-golf-estates.visengine.app",
+			"github": null
 		},
-		"thumbnail": "/project-imgs/saas.jpg",
-		"video": "/project-videos/saas.mp4",
+		"thumbnail": "/project-imgs/niseko.jpg",
+		"video": "/project-videos/niseko.mp4",
 		"gallery": [
-			"/project-imgs/galleries/saas-gallerie/2.png",
-			"/project-imgs/galleries/saas-gallerie/3.png",
-			"/project-imgs/galleries/saas-gallerie/4.png",
-			"/project-imgs/galleries/saas-gallerie/5.png"
+			"/project-imgs/galleries/niseko-gallerie/2.png",
+			"/project-imgs/galleries/niseko-gallerie/3.png",
+			"/project-imgs/galleries/niseko-gallerie/4.png"
+		]
+	},
+	{
+		"id": "wallpapermarket",
+		"name": "Wallpaper Market",
+		"role": "Sole developer",
+		"years": "2023 — 2026",
+		"duration": "ongoing",
+		"stack": ["Next.js", "Node.js", "Express", "MySQL", "Nginx"],
+		"links": {
+			"live": "https://www.wallpapermarket.org/",
+			"github": null
+		},
+		"thumbnail": "/project-imgs/brika.jpg",
+		"video": "/project-videos/brika.mp4",
+		"gallery": [
+			"/project-imgs/galleries/brika-gallerie/1.jpg",
+			"/project-imgs/galleries/brika-gallerie/2.jpg",
+			"/project-imgs/galleries/brika-gallerie/3.jpg",
+			"/project-imgs/galleries/brika-gallerie/4.jpg",
+			"/project-imgs/galleries/brika-gallerie/5.jpg",
+			"/project-imgs/galleries/brika-gallerie/6.jpg"
+		]
+	},
+	{
+		"id": "albarari",
+		"name": "Albarari Interactive Map",
+		"role": "Sole frontend developer",
+		"years": "2024 — 2026",
+		"duration": "ongoing",
+		"stack": ["React", "Next.js", "TypeScript", "Mapbox GL", "SCSS"],
+		"links": {
+			"live": "https://albarari-staging.visengine.app",
+			"github": null
+		},
+		"thumbnail": "/project-imgs/albarari.jpg",
+		"video": "/project-videos/albarari.mp4",
+		"gallery": [
+			"/project-imgs/galleries/albarari-gallerie/3.jpg",
+			"/project-imgs/galleries/albarari-gallerie/4.jpg"
+		]
+	},
+	{
+		"id": "krpano2",
+		"name": "McCarthy Stone VR Tours",
+		"role": "Sole frontend developer",
+		"years": "2026",
+		"duration": "2 months",
+		"stack": ["krpano", "JavaScript", "Blender"],
+		"links": {
+			"live": "https://vr.visengine.app/vr_tour_k1/tour.html",
+			"github": null
+		},
+		"thumbnail": "/project-imgs/krpano2.jpg",
+		"video": "/project-videos/krpano2.mp4",
+		"gallery": []
+	},
+	{
+		"id": "ellington",
+		"name": "Ellington Properties",
+		"role": "Sole frontend developer",
+		"years": "2024 — 2026",
+		"duration": "ongoing",
+		"stack": ["React", "Next.js", "TypeScript", "Mapbox GL", "SCSS"],
+		"links": {
+			"live": null,
+			"github": null
+		},
+		"thumbnail": "/project-imgs/ellington.jpg",
+		"video": "/project-videos/ellington.mp4",
+		"gallery": [
+			"/project-imgs/galleries/ellington-gallerie/1.jpg",
+			"/project-imgs/galleries/ellington-gallerie/2.jpg",
+			"/project-imgs/galleries/ellington-gallerie/3.jpg",
+			"/project-imgs/galleries/ellington-gallerie/4.jpg",
+			"/project-imgs/galleries/ellington-gallerie/5.jpg",
+			"/project-imgs/galleries/ellington-gallerie/6.jpg"
 		]
 	}
 ]
