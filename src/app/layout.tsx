@@ -5,6 +5,7 @@ import XField from "@/components/x-field/XField";
 import PageStage from "@/components/page-stage/PageStage";
 import PageExit from "@/components/page-exit/PageExit";
 import site from "@/data/site.json";
+import Script from "next/script";
 
 const montserrat = Montserrat({
 	subsets: ["latin"],
@@ -76,6 +77,19 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang={site.language} suppressHydrationWarning>
+			<Script
+				src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
+				strategy="afterInteractive"
+			/>
+
+			<Script id="ga4" strategy="afterInteractive">
+				{`
+						window.dataLayer = window.dataLayer || [];
+						function gtag(){dataLayer.push(arguments);}
+						gtag('js', new Date());
+						gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}');
+					  `}
+			</Script>
 			<body className={`${montserrat.variable} ${inter.variable}`}>
 				{/* Runs before the overlay paints: the intro is rendered from the
 				    first paint so it covers the hub with no flash on first visit,
