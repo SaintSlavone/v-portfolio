@@ -43,7 +43,8 @@
 						{ "name": "Three.js" },
 						{ "name": "Mapbox GL" },
 						{ "name": "krpano" },
-						{ "name": "Pannellum" }
+						{ "name": "Pannellum" },
+						{ "name": "Depthmap 3D" }
 					]
 				},
 				{
@@ -74,7 +75,8 @@
 					"children": [
 						{ "name": "Third-party APIs" },
 						{ "name": "Sharp" },
-						{ "name": "CRM / Admin" }
+						{ "name": "CRM / Admin" },
+						{ "name": "Google Analytics" }
 					]
 				}
 			]
