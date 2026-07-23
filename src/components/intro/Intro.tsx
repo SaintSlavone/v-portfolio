@@ -8,6 +8,13 @@ type Phase = "presents" | "slide" | "rotate" | "draw" | "out";
 
 const SESSION_KEY = "intro-played";
 
+// The X-morph is a landscape-desktop composition; on the project's phone
+// breakpoints (see Adaptations.scss) it's skipped entirely — same code path as
+// a reduced-motion visitor. Kept in sync with the pre-paint script in layout.
+const PHONE_QUERY =
+	"(max-width: 600px) and (max-height: 1000px) and (orientation: portrait)," +
+	"(max-width: 1000px) and (max-height: 600px) and (orientation: landscape)";
+
 // Cumulative timeline (ms) for the beats described from the Figma frames:
 //  presents — "V Kostenko Presents" (V is the SVG chevron, rest is text)
 //  slide    — "Kostenko Presents" slides left and hides behind the V
@@ -35,10 +42,11 @@ export default function Intro() {
 	const timers = useRef<number[]>([]);
 
 	useEffect(() => {
-		// Already played this session, or reduced motion: skip straight to the
-		// hub. The overlay was hidden pre-paint, so just unmount it.
+		// Already played this session, reduced motion, or a phone: skip straight
+		// to the hub. The overlay was hidden pre-paint, so just unmount it.
 		const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-		if (sessionStorage.getItem(SESSION_KEY) || reduceMotion) {
+		const isPhone = window.matchMedia(PHONE_QUERY).matches;
+		if (sessionStorage.getItem(SESSION_KEY) || reduceMotion || isPhone) {
 			sessionStorage.setItem(SESSION_KEY, "1");
 			// eslint-disable-next-line react-hooks/set-state-in-effect
 			setDone(true);

@@ -93,11 +93,12 @@ export default function RootLayout({
 			<body className={`${montserrat.variable} ${inter.variable}`}>
 				{/* Runs before the overlay paints: the intro is rendered from the
 				    first paint so it covers the hub with no flash on first visit,
-				    but returning / reduced-motion visitors should never see it —
-				    flag the document here so CSS hides it before it can show. */}
+				    but returning / reduced-motion / phone visitors should never see
+				    it — flag the document here so CSS hides it before it can show.
+				    The phone query mirrors Intro's PHONE_QUERY and Adaptations.scss. */}
 				<script
 					dangerouslySetInnerHTML={{
-						__html: `try{if(sessionStorage.getItem('intro-played')||matchMedia('(prefers-reduced-motion: reduce)').matches){document.documentElement.dataset.introSkip='1'}}catch(e){}`,
+						__html: `try{var p='(max-width: 600px) and (max-height: 1000px) and (orientation: portrait),(max-width: 1000px) and (max-height: 600px) and (orientation: landscape)';if(sessionStorage.getItem('intro-played')||matchMedia('(prefers-reduced-motion: reduce)').matches||matchMedia(p).matches){document.documentElement.dataset.introSkip='1'}}catch(e){}`,
 					}}
 				/>
 				<PageExit>
