@@ -95,7 +95,7 @@ export default function Intro() {
 			timers.current.forEach(clearTimeout);
 			timers.current = [];
 			enterOut();
-			// timers.current.push(window.setTimeout(finish, 400));
+			timers.current.push(window.setTimeout(finish, 400));
 		};
 
 		timeline.forEach(({ phase: next, at }) => {
@@ -103,7 +103,7 @@ export default function Intro() {
 				window.setTimeout(next === "out" ? enterOut : () => setPhase(next), at),
 			);
 		});
-		// timers.current.push(window.setTimeout(finish, total));
+		timers.current.push(window.setTimeout(finish, total));
 
 		window.addEventListener("click", skip);
 		window.addEventListener("keydown", skip);
