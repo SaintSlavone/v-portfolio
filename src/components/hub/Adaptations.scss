@@ -48,6 +48,10 @@
 			align-items: center;
 			justify-content: center;
 
+			&::before {
+				background: none;
+			}
+
 			&.top,
 			&.left,
 			&.right,
