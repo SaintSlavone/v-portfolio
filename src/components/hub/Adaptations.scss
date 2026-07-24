@@ -4,6 +4,12 @@
 // alternating diagonal dividers between stacked nav sections.
 @media screen and (max-width: 600px) and (max-height: 1000px) and (orientation: portrait) {
 	.hub {
+		// First-visit reveal: as the intro's black overlay dissipates, the hub
+		// zooms up from the centre (the flag is set as the intro's out beat starts)
+		:root[data-intro-done] & {
+			animation: intro-reveal 0.8s ease-out both;
+		}
+
 		.hub-wordmark {
 			display: block;
 			position: absolute;
@@ -84,6 +90,11 @@
 // only compact the labels so they clear the shallow X arms.
 @media screen and (max-width: 1000px) and (max-height: 600px) and (orientation: landscape) {
 	.hub {
+		// First-visit reveal: hub zooms up from the centre as the intro dissipates
+		:root[data-intro-done] & {
+			animation: intro-reveal 0.8s ease-out both;
+		}
+
 		.hub-quadrant {
 			.quadrant-label {
 				font-size: 1rem; // 16px

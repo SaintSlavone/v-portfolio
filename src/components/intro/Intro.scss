@@ -55,6 +55,12 @@
 		}
 	}
 
+	// Mobile-only compact spinner svg; the phone breakpoints reveal and animate
+	// it in Adaptations.scss. Hidden on desktop, where .intro-x does the morph.
+	.intro-mx {
+		display: none;
+	}
+
 	.intro-x {
 		position: absolute;
 		inset: 0;
@@ -95,6 +101,7 @@
 	&.intro-phase-slide,
 	&.intro-phase-rotate,
 	&.intro-phase-draw,
+	&.intro-phase-spin,
 	&.intro-phase-out {
 		.intro-tail .intro-tail-inner {
 			transform: translateX(-20vw);
@@ -113,8 +120,9 @@
 		opacity: 0;
 	}
 
-	// All four legs draw together
+	// All four legs draw together (the mobile spin beat keeps them drawn)
 	&.intro-phase-draw,
+	&.intro-phase-spin,
 	&.intro-phase-out {
 		.intro-grid {
 			opacity: 1;

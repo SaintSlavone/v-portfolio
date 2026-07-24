@@ -4,13 +4,13 @@ import "./Intro.scss";
 import "./Adaptations.scss";
 import { useEffect, useRef, useState } from "react";
 
-type Phase = "presents" | "slide" | "rotate" | "draw" | "out";
+type Phase = "presents" | "slide" | "rotate" | "draw" | "spin" | "out";
 
 const SESSION_KEY = "intro-played";
 
-// The X-morph is a landscape-desktop composition; on the project's phone
-// breakpoints (see Adaptations.scss) it's skipped entirely — same code path as
-// a reduced-motion visitor. Kept in sync with the pre-paint script in layout.
+// The full-viewport X-morph is a landscape-desktop composition; on the project's
+// phone breakpoints (see Adaptations.scss) a compact column variant plays
+// instead (MOBILE_TIMELINE). Kept in sync with the pre-paint script in layout.
 const PHONE_QUERY =
 	"(max-width: 600px) and (max-height: 1000px) and (orientation: portrait)," +
 	"(max-width: 1000px) and (max-height: 600px) and (orientation: landscape)";
@@ -31,6 +31,24 @@ const TIMELINE: { phase: Phase; at: number }[] = [
 ];
 const TOTAL = 3600;
 
+// Phone variant — a compact column ("V" chevron over the word "Presents") that
+// resolves into a small X spinning like a loading spinner (see Adaptations.scss):
+//  presents — "V" chevron above the word "Presents"
+//  slide    — "Presents" fades out
+//  rotate   — the chevron rotates 90°
+//  draw     — the chevron's legs draw into a small X as the mark shrinks
+//  spin     — the finished X spins in place like a loading spinner
+//  out      — the overlay fades to reveal the hub
+const MOBILE_TIMELINE: { phase: Phase; at: number }[] = [
+	{ phase: "presents", at: 0 },
+	{ phase: "slide", at: 1000 },
+	{ phase: "rotate", at: 1700 },
+	{ phase: "draw", at: 2300 },
+	{ phase: "spin", at: 2900 },
+	{ phase: "out", at: 3750 },
+];
+const MOBILE_TOTAL = 4150;
+
 // Overlays the hub and plays once per browser session, then unmounts to reveal
 // the hub underneath. The overlay is rendered from the first paint (server +
 // pre-hydration) so it covers the hub with no flash on the first visit; the
@@ -42,36 +60,50 @@ export default function Intro() {
 	const timers = useRef<number[]>([]);
 
 	useEffect(() => {
-		// Already played this session, reduced motion, or a phone: skip straight
-		// to the hub. The overlay was hidden pre-paint, so just unmount it.
+		// Returning-this-session or reduced-motion visitors skip straight to the
+		// hub; the overlay was hidden pre-paint, so just unmount it. Phones now
+		// play a compact variant (MOBILE_TIMELINE), so they are NOT skipped here.
 		const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-		const isPhone = window.matchMedia(PHONE_QUERY).matches;
-		if (sessionStorage.getItem(SESSION_KEY) || reduceMotion || isPhone) {
+		if (sessionStorage.getItem(SESSION_KEY) || reduceMotion) {
 			sessionStorage.setItem(SESSION_KEY, "1");
 			// eslint-disable-next-line react-hooks/set-state-in-effect
 			setDone(true);
 			return;
 		}
 
+		// Phones run the column "V Presents" → spinning-X beats; desktop runs the
+		// full-viewport morph that lands on the hub X.
+		const isPhone = window.matchMedia(PHONE_QUERY).matches;
+		const timeline = isPhone ? MOBILE_TIMELINE : TIMELINE;
+		const total = isPhone ? MOBILE_TOTAL : TOTAL;
+
 		const finish = () => {
 			sessionStorage.setItem(SESSION_KEY, "1");
-			// Cue the film-grain (Main.scss) to fade in a beat after the overlay
-			document.documentElement.dataset.introDone = "1";
 			setDone(true);
+		};
+
+		// Entering the fade-out beat. Flag the document here (not at finish) so the
+		// hub's reveal (Hub Adaptations) zooms up from the centre while the black
+		// overlay is still dissipating, and the film-grain (Main.scss) fades in.
+		const enterOut = () => {
+			document.documentElement.dataset.introDone = "1";
+			setPhase("out");
 		};
 
 		// Click / keypress fast-forwards to the fade-out (see annotation)
 		const skip = () => {
 			timers.current.forEach(clearTimeout);
 			timers.current = [];
-			setPhase("out");
-			timers.current.push(window.setTimeout(finish, 400));
+			enterOut();
+			// timers.current.push(window.setTimeout(finish, 400));
 		};
 
-		TIMELINE.forEach(({ phase: next, at }) => {
-			timers.current.push(window.setTimeout(() => setPhase(next), at));
+		timeline.forEach(({ phase: next, at }) => {
+			timers.current.push(
+				window.setTimeout(next === "out" ? enterOut : () => setPhase(next), at),
+			);
 		});
-		timers.current.push(window.setTimeout(finish, TOTAL));
+		// timers.current.push(window.setTimeout(finish, total));
 
 		window.addEventListener("click", skip);
 		window.addEventListener("keydown", skip);
@@ -88,10 +120,28 @@ export default function Intro() {
 	return (
 		<div className={`intro intro-phase-${phase}`} aria-hidden="true">
 			<div className="intro-grid" />
-			{/* "Kostenko Presents" — the tail that slides away behind the V */}
+			{/* "Kostenko Presents" — the tail that slides away behind the V.
+			    Phones drop "Kostenko" and stack the remaining word under the V. */}
 			<span className="intro-tail">
-				<span className="intro-tail-inner">Kostenko Presents</span>
+				<span className="intro-tail-inner">
+					<span className="intro-tail-kostenko">Kostenko </span>Presents
+				</span>
 			</span>
+			{/* Mobile only: a compact square X. The chevron rotates and its legs
+			    draw into a small X that then spins like a loading spinner. Own
+			    square viewBox so the spin stays crisp on portrait viewports —
+			    the desktop svg below stretches (preserveAspectRatio="none"). */}
+			<svg className="intro-mx" viewBox="0 0 100 100" aria-hidden="true">
+				<g className="intro-mvee">
+					<line x1="50" y1="60" x2="37" y2="30" />
+					<line x1="50" y1="60" x2="63" y2="30" />
+					<circle className="intro-mdot" cx="50" cy="60" r="2" fill="#fff" />
+				</g>
+				<line className="intro-mleg" x1="50" y1="50" x2="8" y2="8" pathLength={1} />
+				<line className="intro-mleg" x1="50" y1="50" x2="8" y2="92" pathLength={1} />
+				<line className="intro-mleg" x1="50" y1="50" x2="92" y2="8" pathLength={1} />
+				<line className="intro-mleg" x1="50" y1="50" x2="92" y2="92" pathLength={1} />
+			</svg>
 			{/* The V and the X are the SAME svg. The .intro-vee chevron is two
 			    short legs that rotate in place; on draw they extend into the X
 			    while the remaining legs draw in. Full X == Hub.scss geometry. */}

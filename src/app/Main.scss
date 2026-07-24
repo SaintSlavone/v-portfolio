@@ -122,6 +122,15 @@ body::before {
 	}
 }
 
+// First-visit mobile intro reveal: the hub zooms up from the centre while the
+// intro overlay's black background dissipates (see Intro / Hub Adaptations).
+@keyframes intro-reveal {
+	from {
+		transform: scale(0.62);
+		opacity: 0;
+	}
+}
+
 // Staggered element entrance — slides from --enter-from to the resting
 // position. Interior pages set direction / velocity / queue per element.
 @keyframes element-enter {
