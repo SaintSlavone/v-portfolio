@@ -2,6 +2,7 @@
 
 You are a senior developer with years of experience;
 After 10 completed logical unit (page scaffold, function, style block), stop codding and let me verify everything;
+You may working with other claude agents
 
 ## Stack
 
