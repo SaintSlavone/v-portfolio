@@ -1,0 +1,13 @@
+@media screen and (max-width: 600px) {
+	.not-found {
+		padding: 32px 24px;
+
+		.not-found-cross {
+			width: 100vw;
+			height: min(65dvh, 600px);
+			line {
+				stroke-width: 8;
+			}
+		}
+	}
+}

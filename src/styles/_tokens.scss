@@ -8,6 +8,7 @@
 $color-bg: #000000; // page background
 $color-bg-body: #1f1f1f; // body base behind the grain (smolna-style)
 $color-fg: #ffffff; // primary text, X strokes, send button bg
+$color-error: #ff0000; // 404 focal point
 $color-text-secondary: #cfcfcf; // role line, role & duration
 $color-text-body: #dadada; // long-form body copy
 $color-text-muted: #9a9a9a; // captions, placeholders, hints
@@ -39,6 +40,14 @@ $font-body: var(--font-inter), sans-serif;
 }
 
 // ---- Type roles ---------------------------------------------
+@mixin text-error-code {
+	font-family: $font-heading;
+	font-size: clamp(7rem, 18vw, 15rem);
+	font-weight: 500;
+	line-height: 1;
+	letter-spacing: -0.06em;
+	color: $color-error;
+}
 // display — page hero name (About)
 @mixin text-display {
 	font-family: $font-heading;

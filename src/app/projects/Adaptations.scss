@@ -2,12 +2,15 @@
 
 // Portrait phones: the fixed 3/1/2 rhythm collapses into a single
 // column; cards keep a uniform aspect instead of the row heights
-@media screen and (max-width: 600px) and (max-height: 1000px) and (orientation: portrait) {
+@media screen and (max-width: 600px) {
 	.projects {
-		padding: 12vh 24px 10vh;
+		padding: 120px 24px 64px;
 
 		.projects-title {
-			top: 5vh;
+			position: relative;
+			top: auto;
+			left: auto;
+			margin-bottom: 40px;
 		}
 
 		.projects-grid {
@@ -32,7 +35,7 @@
 	}
 }
 
-@media screen and (max-width: 1000px) and (max-height: 600px) and (orientation: landscape) {
+@media screen and (min-width: 601px) and (max-width: 1000px) and (max-height: 600px) and (orientation: landscape) {
 	.projects {
 		padding-top: 14vh;
 

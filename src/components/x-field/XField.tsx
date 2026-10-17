@@ -23,6 +23,7 @@ const routeState: Record<string, { exit: string; arms: string }> = {
 export default function XField() {
 	const pathname = usePathname();
 	const { isLeaving, leaveToHub } = usePageExit();
+	const isUnknownRoute = pathname !== "/" && !routeState[pathname];
 	// While the page slides out the X is already on its way home, so it drops
 	// back to the hub state the moment the exit starts rather than on arrival
 	const state = isLeaving ? undefined : routeState[pathname];
@@ -55,6 +56,7 @@ export default function XField() {
 			{/* The grid sits behind page content and carries the same --exit
 			    transform as the X, so the two slide together on navigation */}
 			<div className={`grid-backdrop ${exitClass}`} aria-hidden="true" />
+			{!isUnknownRoute && (
 			<div className={`x-field ${stateClass}`}>
 				<svg
 					className="x-field-x"
@@ -86,6 +88,7 @@ export default function XField() {
 					</>
 				)}
 			</div>
+			)}
 		</>
 	);
 }

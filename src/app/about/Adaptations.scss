@@ -5,9 +5,25 @@
 $about-gap-portrait: 4vh;
 $about-gap-landscape: 3vh;
 
-@media screen and (max-width: 600px) and (max-height: 1000px) and (orientation: portrait) {
+@media screen and (max-width: 600px) {
 	.about {
-		padding: 14vh 20px 10vh;
+		height: auto;
+		min-height: 100dvh;
+		overflow: visible;
+		// Share any remaining viewport height between the content blocks so
+		// the CV does not sit above an empty strip on taller phone viewports.
+		justify-content: space-between;
+		padding: 120px 20px 16px;
+
+		// Keep pull-to-refresh from retaining the off-screen entrance positions
+		// as extra scrollable space on iOS Safari.
+		.about-name,
+		.about-role,
+		.about-bio,
+		.about-languages,
+		.about-cv {
+			animation: none;
+		}
 
 		.about-role {
 			margin-top: $about-gap-portrait;
@@ -37,12 +53,12 @@ $about-gap-landscape: 3vh;
 	}
 }
 
-@media screen and (max-width: 1000px) and (max-height: 600px) and (orientation: landscape) {
+@media screen and (min-width: 601px) and (max-width: 1000px) and (max-height: 600px) and (orientation: landscape) {
 	.about {
 		// Content is taller than a rotated phone screen — allow scrolling
 		height: auto;
 		min-height: 100dvh;
-		overflow-y: auto;
+		overflow: visible;
 		padding: 8vh 24px 12vh;
 
 		.about-role {

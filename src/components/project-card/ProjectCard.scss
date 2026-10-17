@@ -12,8 +12,10 @@
 	overflow: hidden;
 	background-color: $color-card-idle;
 	cursor: pointer;
+	user-select: none;
 
 	.card-thumb {
+		-webkit-user-drag: none;
 		object-fit: cover;
 		filter: grayscale(1);
 		transition: filter 0.4s ease;

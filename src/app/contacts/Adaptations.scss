@@ -1,15 +1,40 @@
 @use "../../styles/tokens" as *;
 
-@media screen and (max-width: 600px) and (max-height: 1000px) and (orientation: portrait) {
+@media screen and (max-width: 600px) {
 	.contacts {
 		// Content is taller than a phone screen once the form is in — allow scrolling
 		height: auto;
-		min-height: 100dvh;
-		overflow-y: auto;
-		padding: 12vh 20px 8vh;
+		min-height: 100svh;
+		overflow: visible;
+		padding: 120px 20px 64px;
+
+		.contacts-inner-container {
+			width: 100%;
+			height: auto;
+			gap: 0;
+		}
+
+		// iOS Safari can retain the scrollable overflow from the 80dvh
+		// entrance transform after a pull-to-refresh.
+		.contacts-title,
+		.contacts-list,
+		.contact-form {
+			animation: none;
+		}
 
 		.contacts-list {
-			margin-top: 6vh;
+			margin-top: 40px;
+			min-width: 0;
+			width: 100%;
+
+			.contacts-row + .contacts-row {
+				margin-top: 36px;
+			}
+
+			.contacts-email,
+			.contacts-link {
+				overflow-wrap: anywhere;
+			}
 
 			.contacts-email {
 				font-size: 1.25rem; // 20px
@@ -26,11 +51,11 @@
 	}
 }
 
-@media screen and (max-width: 1000px) and (max-height: 600px) and (orientation: landscape) {
+@media screen and (min-width: 601px) and (max-width: 1000px) and (max-height: 600px) and (orientation: landscape) {
 	.contacts {
 		height: auto;
-		min-height: 100dvh;
-		overflow-y: auto;
+		min-height: 100svh;
+		overflow: visible;
 		padding: 6vh 24px 10vh;
 
 		.contacts-list {

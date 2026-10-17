@@ -1,0 +1,21 @@
+@use "../styles/tokens" as *;
+
+@media screen and (max-width: 600px) {
+	html,
+	body {
+		// A fixed 100% body can outlive Safari's changing visual viewport
+		// after pull-to-refresh, leaving scrollable space below the page.
+		height: auto;
+		min-height: 100dvh;
+	}
+
+	body {
+		// The body background paints the document canvas even while Safari
+		// resizes its viewport during pull-to-refresh.
+		@include grid-texture;
+	}
+
+	.grid-backdrop {
+		display: none;
+	}
+}

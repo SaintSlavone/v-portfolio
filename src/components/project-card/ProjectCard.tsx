@@ -53,6 +53,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
 			>
 				<Image
 					className="card-thumb"
+					draggable={false}
 					src={project.thumbnail}
 					alt={`${project.name} — ${project.stack.join(", ")}`}
 					fill

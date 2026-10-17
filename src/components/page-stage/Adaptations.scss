@@ -1,7 +1,7 @@
 @use "../../styles/tokens" as *;
 
 // The X doesn't move on mobile portrait, so the page shouldn't slide either
-@media screen and (max-width: 600px) and (max-height: 1000px) and (orientation: portrait) {
+@media screen and (max-width: 600px) {
 	.page-stage.enter-top,
 	.page-stage.enter-bottom,
 	.page-stage.enter-left,

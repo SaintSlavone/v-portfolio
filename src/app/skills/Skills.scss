@@ -3,6 +3,7 @@
 // Type roles map to Figma "X Skills Page" — see tokens for the role definitions
 .skills {
 	@include grid-surface;
+	user-select: none;
 
 	.skills-title {
 		@include text-section-title;

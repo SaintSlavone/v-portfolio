@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Montserrat } from "next/font/google";
 import "./Main.scss";
+import "./Adaptations.scss";
 import XField from "@/components/x-field/XField";
 import PageStage from "@/components/page-stage/PageStage";
 import PageExit from "@/components/page-exit/PageExit";

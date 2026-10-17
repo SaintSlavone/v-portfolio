@@ -1,0 +1,57 @@
+@use "../styles/tokens" as *;
+
+.not-found {
+	@include grid-surface;
+	display: grid;
+	place-items: center;
+	padding: 32px;
+	text-align: center;
+
+	.not-found-cross {
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		width: min(90vw, 1000px);
+		height: min(85dvh, 850px);
+		transform: translate(-50%, -50%);
+		pointer-events: none;
+
+		line {
+			stroke: $color-fg;
+			stroke-width: 12;
+			vector-effect: non-scaling-stroke;
+		}
+	}
+
+	.not-found-content {
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		transform: translate(-50%, -50%);
+		z-index: 3;
+		width: 100%;
+	}
+
+	.not-found-code {
+		@include text-error-code;
+	}
+
+	.not-found-home {
+		@include text-button;
+		position: absolute;
+		left: 50%;
+		top: calc(100% + 36px);
+		transform: translateX(-50%);
+		white-space: nowrap;
+		padding: 14px 24px;
+		border: 1px solid $color-fg;
+		background-color: $color-bg-body;
+		transition: background-color 0.3s ease, color 0.3s ease;
+
+		&:hover,
+		&:focus-visible {
+			background-color: $color-fg;
+			color: $color-bg;
+		}
+	}
+}
