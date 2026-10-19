@@ -11,6 +11,12 @@ body {
 	height: 100%;
 }
 
+html {
+	// Keep iOS landscape text inflation from overriding the responsive type scale.
+	-webkit-text-size-adjust: 100%;
+	text-size-adjust: 100%;
+}
+
 body {
 	// Starts black to match the intro; the lighter base fades in with the
 	// grain a beat after the intro is out (revealed below)

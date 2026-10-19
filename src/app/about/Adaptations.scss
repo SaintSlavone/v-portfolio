@@ -59,7 +59,21 @@ $about-gap-landscape: 3vh;
 		height: auto;
 		min-height: 100dvh;
 		overflow: visible;
-		padding: 8vh 24px 12vh;
+		justify-content: flex-start;
+		padding: 56px 10vw 36px;
+
+		.about-name {
+			// Compact the display role without changing desktop typography.
+			@include text-landscape-display;
+		}
+
+		.about-name,
+		.about-role,
+		.about-bio,
+		.about-languages,
+		.about-cv {
+			animation: none;
+		}
 
 		.about-role {
 			margin-top: $about-gap-landscape;

@@ -5,6 +5,7 @@ import "./Adaptations.scss";
 import XField from "@/components/x-field/XField";
 import PageStage from "@/components/page-stage/PageStage";
 import PageExit from "@/components/page-exit/PageExit";
+import LandscapeNotice from "@/components/landscape-notice/LandscapeNotice";
 import site from "@/data/site.json";
 import Script from "next/script";
 
@@ -106,6 +107,7 @@ export default function RootLayout({
 					<XField />
 					<PageStage>{children}</PageStage>
 				</PageExit>
+				<LandscapeNotice />
 			</body>
 		</html>
 	);

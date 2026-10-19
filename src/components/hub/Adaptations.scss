@@ -1,5 +1,16 @@
 @use "../../styles/tokens" as *;
 
+@media (hover: none) {
+	.hub {
+		.hub-quadrant:hover::before {
+			opacity: 0;
+		}
+		.hub-quadrant:active::before {
+			opacity: 1;
+		}
+	}
+}
+
 // Mobile portrait hub (see Figma "Mobile / Hub — 390"): the X collapses into
 // alternating diagonal dividers between stacked nav sections.
 @media screen and (max-width: 600px) and (max-height: 1000px) and (orientation: portrait) {
@@ -94,6 +105,8 @@
 // only compact the labels so they clear the shallow X arms.
 @media screen and (max-width: 1000px) and (max-height: 600px) and (orientation: landscape) {
 	.hub {
+		// WKWebView can lag behind toolbar changes when resolving dvh.
+		height: var(--phone-viewport-height, 100dvh);
 		// First-visit reveal: hub zooms up from the centre as the intro dissipates
 		:root[data-intro-done] & {
 			animation: intro-reveal 0.8s ease-out both;

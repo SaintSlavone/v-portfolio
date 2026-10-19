@@ -56,10 +56,29 @@
 		height: auto;
 		min-height: 100svh;
 		overflow: visible;
-		padding: 6vh 24px 10vh;
+		padding: 48px 8vw 36px;
+
+		.contacts-inner-container {
+			width: 100%;
+			height: auto;
+			display: grid;
+			grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+			align-items: start;
+			gap: 32px;
+			margin-top: 28px;
+		}
+
+		.contacts-title,
+		.contacts-list,
+		.contact-form {
+			animation: none;
+		}
 
 		.contacts-list {
-			margin-top: 22vh;
+			margin-top: 0;
+			text-align: left;
+			min-width: 0;
+			overflow-wrap: anywhere;
 
 			.contacts-row + .contacts-row {
 				margin-top: 3vh;

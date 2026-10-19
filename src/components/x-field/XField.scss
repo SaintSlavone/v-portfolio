@@ -44,6 +44,9 @@
 .x-field {
 	position: fixed;
 	inset: 0;
+	// Clip the extended SVG legs at the frame, after their exit translation.
+	// Otherwise WebKit can retain their off-screen overflow after rotation.
+	overflow: hidden;
 	z-index: 8;
 	pointer-events: none;
 	@include x-exit-transform;
